@@ -47,6 +47,9 @@
         .modal-content { background: white; width: 90%; max-width: 600px; padding: 30px; border-radius: 12px; position: relative; max-height: 90vh; overflow-y: auto; }
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; }
 
+        /* Search Bar Style */
+        .search-box { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid var(--primary); }
+
         @media (max-width: 600px) {
             .form-grid { grid-template-columns: 1fr; }
             .main-title { font-size: 1.8rem; }
@@ -67,7 +70,8 @@
         <a onclick="showSection('courses')">COURSES</a>
         <a onclick="showSection('events')">PAST EVENTS</a>
         <a onclick="showSection('upcoming')">UPCOMING EVENTS</a>
-        <a onclick="showSection('students')">STUDENTS</a>
+        <a onclick="showSection('registration')">REGISTRATION</a>
+        <a onclick="showSection('search')">SEARCH</a>
     </div>
 </nav>
 
@@ -111,7 +115,7 @@
     </div>
 </section>
 
-<section id="students">
+<section id="registration">
     <div class="container">
         <h2>Register New Student</h2>
         <div id="studentForm" style="background:#eef2f3; padding:25px; border-radius:12px;">
@@ -145,8 +149,19 @@
             <button class="main-btn" onclick="saveStudent()">Register Student</button>
         </div>
         <hr style="margin:40px 0;">
-        <h3>Student Records</h3>
+        <h3>Recent Enrollments</h3>
         <div id="studentList" class="grid"></div>
+    </div>
+</section>
+
+<section id="search">
+    <div class="container">
+        <h2>Search Student Database</h2>
+        <div class="search-box">
+            <label>Search by Name, Phone, or Aadhar</label>
+            <input type="text" id="searchInput" onkeyup="filterStudents()" placeholder="Start typing to search...">
+        </div>
+        <div id="searchResults" class="grid"></div>
     </div>
 </section>
 
@@ -165,6 +180,9 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+
+  // Local state to store students for searching
+  let allStudents = [];
 
   const PAST_EVENTS = [{ 
     name: "Sri Rama Navami", 
@@ -258,17 +276,24 @@
     location.reload();
   };
 
+  // Synchronize both list views
   onSnapshot(query(collection(db, "students"), orderBy("timestamp", "desc")), (snap) => {
     const list = document.getElementById('studentList');
     list.innerHTML = '';
+    allStudents = []; // Reset local array
+    
     snap.forEach(docSnap => {
         const s = docSnap.data();
         const id = docSnap.id;
+        const studentObj = { id, ...s };
+        allStudents.push(studentObj);
         window[`data_${id}`] = s;
-        list.innerHTML += `
+
+        const cardHtml = `
             <div class="card">
                 <strong>${s.name}</strong><br>
-                <small>📍 ${s.venue || 'Main'}</small><br>
+                <small>📞 ${s.phone || 'N/A'}</small><br>
+                <small>🆔 ${s.aadhar || 'N/A'}</small><br>
                 <small>📚 ${s.courses.join(", ")}</small>
                 <div class="btn-group">
                     <button class="action-btn" style="background:var(--primary)" onclick="viewStudent('${id}')">View</button>
@@ -276,8 +301,45 @@
                     <button class="action-btn" style="background:#e74c3c" onclick="deleteStudent('${id}', '${s.name}')">Delete</button>
                 </div>
             </div>`;
+        list.innerHTML += cardHtml;
     });
+    // Update search results if user was searching
+    filterStudents();
   });
+
+  // Search Logic
+  window.filterStudents = () => {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const resultsContainer = document.getElementById('searchResults');
+    resultsContainer.innerHTML = '';
+
+    if(query === "") {
+        resultsContainer.innerHTML = "<p style='color:#666;'>Enter a name, phone, or aadhar to see results.</p>";
+        return;
+    }
+
+    const filtered = allStudents.filter(s => 
+        (s.name && s.name.toLowerCase().includes(query)) ||
+        (s.phone && s.phone.includes(query)) ||
+        (s.aadhar && s.aadhar.includes(query))
+    );
+
+    if(filtered.length === 0) {
+        resultsContainer.innerHTML = "<p>No matching students found.</p>";
+    } else {
+        filtered.forEach(s => {
+            resultsContainer.innerHTML += `
+                <div class="card" style="border-left: 5px solid var(--secondary);">
+                    <strong>${s.name}</strong><br>
+                    <small>📞 ${s.phone || 'N/A'}</small><br>
+                    <small>🆔 ${s.aadhar || 'N/A'}</small><br>
+                    <div class="btn-group">
+                        <button class="action-btn" style="background:var(--primary)" onclick="viewStudent('${s.id}')">View Full Details</button>
+                    </div>
+                </div>`;
+        });
+    }
+  };
 
   window.viewStudent = (id) => {
     const s = window[`data_${id}`];
