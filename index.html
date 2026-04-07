@@ -5,55 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prana Yoga Tuni Portal</title>
     <style>
-        :root { --primary: #2c3e50; --secondary: #27ae60; --accent: #e67e22; --light: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--light); color: #333; overflow-x: hidden; }
+        :root { --primary: #2c3e50; --secondary: #27ae60; --accent: #e67e22; --light: #f4f7f6; --danger: #e74c3c; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--light); color: #333; }
         
-        /* Header */
-        .main-header { background: white; padding: 30px 20px; text-align: center; border-bottom: 4px solid var(--secondary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .header-content { display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; }
-        .logo-img { height: 100px; width: auto; border-radius: 12px; }
-        .main-title { color: var(--primary); margin: 0; font-size: 2.8rem; font-weight: 800; text-transform: uppercase; }
+        .main-header { background: white; padding: 20px; text-align: center; border-bottom: 4px solid var(--secondary); }
+        .header-content { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .logo-img { height: 80px; border-radius: 8px; }
+        .main-title { color: var(--primary); margin: 0; font-size: 2.2rem; font-weight: 800; }
+        
+        nav { background: var(--primary); position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1100px; margin: auto; display: flex; overflow-x: auto; }
+        nav a { color: white; padding: 15px; text-decoration: none; font-weight: bold; cursor: pointer; flex: 1; text-align: center; white-space: nowrap; font-size: 0.9rem; }
+        nav a:hover { background: rgba(255,255,255,0.1); }
 
-        /* Navigation */
-        nav { background: var(--primary); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .nav-container { max-width: 1100px; margin: auto; display: flex; justify-content: space-around; }
-        nav a { color: white; padding: 18px 15px; text-decoration: none; font-weight: bold; cursor: pointer; flex: 1; text-align: center; font-size: 1rem; }
-        nav a:hover { background: rgba(255,255,255,0.1); color: var(--secondary); }
-
-        section { padding: 40px 20px; max-width: 1100px; margin: auto; display: none; }
+        section { padding: 20px; max-width: 1100px; margin: auto; display: none; }
         section.active { display: block; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
-        /* Forms */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
-        .checkbox-group { background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.9rem; }
-        input { width: 100%; padding: 12px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        /* Fixed Layout: Name -> Checkbox -> Year */
+        .course-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.85rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .course-label { flex: 1; font-weight: 600; min-width: 120px; }
+        .reg-cb, .ed-cb { width: 18px !important; height: 18px !important; margin: 0 !important; cursor: pointer; }
+        .year-input { width: 75px !important; padding: 4px !important; margin: 0 !important; border: 1px solid #ccc; border-radius: 4px; }
 
-        /* Cards & Buttons */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .card { border: 1px solid #eee; padding: 20px; border-radius: 10px; background: #fff; position: relative; }
+        label { font-weight: bold; display: block; margin-bottom: 3px; font-size: 0.85rem; }
+        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .card { border: 1px solid #eee; padding: 15px; border-radius: 10px; background: #fff; }
         .upcoming-card { border-left: 5px solid var(--accent); }
-        .btn-group { display: flex; gap: 5px; margin-top: 15px; }
-        .action-btn { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.85rem; }
-        .main-btn { background: var(--secondary); color: white; padding: 15px; width: 100%; font-size: 1.1rem; border: none; cursor: pointer; border-radius: 6px; font-weight: bold; }
+        .event-desc { font-size: 0.85rem; color: #666; margin: 10px 0; line-height: 1.4; }
+        
+        .btn-group-small { display: flex; gap: 4px; margin-top: 10px; }
+        .sm-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.7rem; text-transform: uppercase; }
+        .btn-view { background: var(--primary); }
+        .btn-edit { background: var(--secondary); }
+        .btn-del { background: var(--danger); }
+        .main-btn { background: var(--secondary); color: white; padding: 12px; width: 100%; font-size: 1rem; border: none; cursor: pointer; border-radius: 6px; font-weight: bold; }
 
-        /* Gallery */
-        .image-gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .gallery-item { width: 150px; height: 150px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .photo-sequence { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 15px; }
+        .seq-img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; cursor: pointer; }
 
-        /* Modals */
-        #lightbox, .modal { display: none; position: fixed; z-index: 5000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
-        .modal-content { background: white; width: 90%; max-width: 600px; padding: 30px; border-radius: 12px; position: relative; max-height: 90vh; overflow-y: auto; }
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; }
+        #lightbox { display: none; position: fixed; z-index: 5000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
+        #lbImg { max-width: 85%; max-height: 80%; border: 3px solid white; }
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); color: white; border: none; font-size: 2rem; padding: 20px; cursor: pointer; border-radius: 50%; }
+        #prevBtn { left: 20px; } #nextBtn { right: 20px; }
 
-        /* Search Bar Style */
-        .search-box { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid var(--primary); }
+        .modal { display: none; position: fixed; z-index: 5000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; padding: 10px; }
+        .modal-content { background: white; width: 100%; max-width: 500px; padding: 20px; border-radius: 12px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; }
 
-        @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .main-title { font-size: 1.8rem; }
-        }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -75,12 +79,13 @@
     </div>
 </nav>
 
-<div id="studentModal" class="modal">
-    <div class="modal-content" id="modalBody"></div>
-</div>
+<div id="studentModal" class="modal"><div class="modal-content" id="modalBody"></div></div>
 
-<div id="lightbox" onclick="closeLightbox()">
-    <img id="lbImg" src="" style="max-width: 95%; max-height: 85%;">
+<div id="lightbox">
+    <span style="position:absolute; top:20px; right:20px; color:white; font-size:2.5rem; cursor:pointer;" onclick="closeLightbox()">&times;</span>
+    <button class="nav-btn" id="prevBtn" onclick="changeImg(-1)">&#10094;</button>
+    <img id="lbImg" src="">
+    <button class="nav-btn" id="nextBtn" onclick="changeImg(1)">&#10095;</button>
 </div>
 
 <section id="courses" class="active">
@@ -90,7 +95,7 @@
             <div class="card"><h3>Basic (L1)</h3><p>Secrets of Nature Level 1</p></div>
             <div class="card"><h3>Advance (L2)</h3><p>Secrets of Nature Level 2</p></div>
             <div class="card"><h3>Psychotherapy (L3)</h3><p>Secrets of Nature Level 3</p></div>
-            <div class="card"><h3>HamsaVedaYoga</h3><p> To accelerate the evolutionary development of the soul so that the person can be of greater service to mankind and the planet Earth.</p></div>
+            <div class="card"><h3>HamsaVedaYoga</h3><p>To accelerate the evolutionary development of the soul so that the person can be of greater service to mankind and the planet Earth.</p></div>
         </div>
     </div>
 </section>
@@ -98,70 +103,55 @@
 <section id="events">
     <div class="container" id="eventListView">
         <h2>Past Events</h2>
-        <div id="eventLinksContainer" class="grid"></div>
+        <div id="pastEventsGrid" class="grid"></div>
     </div>
     <div class="container" id="galleryView" style="display:none;">
-        <button onclick="closeGallery()" style="margin-bottom:20px; padding: 10px 20px; cursor: pointer;">← Back to Events</button>
-        <h2 id="currentEventTitle"></h2>
-        <p id="currentEventDesc" style="color: #666; font-style: italic; margin-bottom: 20px;"></p>
-        <div class="image-gallery" id="galleryContainer"></div>
+        <button onclick="closeGallery()" style="padding:8px; margin-bottom:15px;">← Back</button>
+        <h2 id="galleryTitle"></h2>
+        <div class="photo-sequence" id="galleryContainer"></div>
     </div>
 </section>
 
 <section id="upcoming">
     <div class="container">
-        <h2>Upcoming Events</h2>
-        <div id="upcomingList" class="grid"></div>
+        <h2>Upcoming Schedule</h2>
+        <div id="upcomingGrid" class="grid"></div>
     </div>
 </section>
 
 <section id="registration">
     <div class="container">
-        <h2>Register New Student</h2>
-        <div id="studentForm" style="background:#eef2f3; padding:25px; border-radius:12px;">
-            <div class="form-grid">
-                <div>
-                    <label>Student Name</label>
-                    <input type="text" id="stName" placeholder="Full Name">
-                    <label>Phone Number</label>
-                    <input type="tel" id="stPhone" placeholder="Mobile Number">
-                    <label>Aadhar Number</label>
-                    <input type="text" id="stAadhar" placeholder="Student Aadhar">
-                    <label>Branch / Venue</label>
-                    <input type="text" id="stVenue" placeholder="Assign Branch">
-                </div>
-                <div>
-                    <div class="checkbox-group">
-                        <label>Select Courses:</label>
-                        <input type="checkbox" name="course" value="Basic (L1)" style="width:auto;"> Basic (L1)<br>
-                        <input type="checkbox" name="course" value="Advance (L2)" style="width:auto;"> Advance (L2)<br>
-                        <input type="checkbox" name="course" value="Psychotherapy (L3)" style="width:auto;"> Psychotherapy (L3)<br>
-                        <input type="checkbox" name="course" value="HamsaVedaYoga" style="width:auto;"> HamsaVedaYoga
-                    </div>
-                    <label style="margin-top:10px;">Reference Name</label>
-                    <input type="text" id="refName" placeholder="Referred By">
-                    <label>Reference Contact</label>
-                    <input type="tel" id="refPhone" placeholder="Ref Mobile">
-                    <label>Reference Aadhar</label>
-                    <input type="text" id="refAadhar" placeholder="Ref Aadhar">
-                </div>
+        <h2 style="margin-top:0">Student Registration</h2>
+        <div class="form-grid">
+            <div>
+                <label>Full Name</label><input type="text" id="stName">
+                <label>Phone</label><input type="tel" id="stPhone">
+                <label>Aadhar Number</label><input type="text" id="stAadhar">
+                <label>Branch</label><input type="text" id="stVenue">
             </div>
-            <button class="main-btn" onclick="saveStudent()">Register Student</button>
+            <div>
+                <div style="background:#fdfdfd; padding:12px; border-radius:8px; border:1px solid #ddd;">
+                    <label>Courses Completed:</label>
+                    <div class="course-row"><span class="course-label">Basic (L1)</span><input type="checkbox" class="reg-cb" value="Basic (L1)"><input type="number" class="year-input reg-yr" data-c="Basic (L1)" placeholder="Year"></div>
+                    <div class="course-row"><span class="course-label">Advance (L2)</span><input type="checkbox" class="reg-cb" value="Advance (L2)"><input type="number" class="year-input reg-yr" data-c="Advance (L2)" placeholder="Year"></div>
+                    <div class="course-row"><span class="course-label">Psychotherapy (L3)</span><input type="checkbox" class="reg-cb" value="Psychotherapy (L3)"><input type="number" class="year-input reg-yr" data-c="Psychotherapy (L3)" placeholder="Year"></div>
+                    <div class="course-row"><span class="course-label">HamsaVedaYoga</span><input type="checkbox" class="reg-cb" value="HamsaVedaYoga"><input type="number" class="year-input reg-yr" data-c="HamsaVedaYoga" placeholder="Year"></div>
+                </div>
+                <label style="margin-top:10px;">Ref Name</label><input type="text" id="refName">
+                <label>Ref Contact</label><input type="tel" id="refPhone">
+            </div>
         </div>
-        <hr style="margin:40px 0;">
-        <h3>Recent Enrollments</h3>
-        <div id="studentList" class="grid"></div>
+        <button class="main-btn" onclick="saveStudent()">Save Registration</button>
+        <h3 style="margin-top:25px;">Recent Students</h3>
+        <div id="recentList" class="grid"></div>
     </div>
 </section>
 
 <section id="search">
     <div class="container">
-        <h2>Search Student Database</h2>
-        <div class="search-box">
-            <label>Search by Name, Phone, or Aadhar</label>
-            <input type="text" id="searchInput" onkeyup="filterStudents()" placeholder="Start typing to search...">
-        </div>
-        <div id="searchResults" class="grid"></div>
+        <h2>Search Database</h2>
+        <input type="text" id="searchInput" onkeyup="filterStudents()" placeholder="Search Name, Phone, or Aadhar...">
+        <div id="searchResults" class="grid" style="margin-top:15px;"></div>
     </div>
 </section>
 
@@ -180,217 +170,145 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
-  // Local state to store students for searching
-  let allStudents = [];
+  const courseList = ["Basic (L1)", "Advance (L2)", "Psychotherapy (L3)", "HamsaVedaYoga"];
 
   const PAST_EVENTS = [{ 
     name: "Sri Rama Navami", 
-    description: "A wonderful session with over 1500 participants chanting the Rama Mantra.",
+    description: "A wonderful session with over 1500 participants chanting the Rama Mantra together.",
     photos: ["https://i.postimg.cc/0jGtPtCB/IMG-20260329-054539564-HDR.jpg", "https://i.postimg.cc/L8Qx9gzF/IMG-20260329-160642945-HDR.jpg", "https://i.postimg.cc/jSS8Y4Js/IMG-20260329-161125130-HDR.jpg", "https://i.postimg.cc/fRCQZ397/IMG-20260329-162337260-HDR.jpg"] 
   }];
 
-  const FUTURE_EVENTS = [{
-    name: "Rama chanting",
-    place: "Annavaram devsthanam",
-    date: "April 11, 2026",
-    time: "5:00 AM - 7:00 AM",
-    description: "Chanting the Rama Mantra."
+  const FUTURE_EVENTS = [{ 
+    name: "Rama Chanting", 
+    place: "Annavaram Devsthanam", 
+    date: "April 11, 2026", 
+    time: "5:00 AM - 7:00 AM", 
+    description: "Chanting the Rama Mantra." 
   },
   {
-    name: "Psychotherapy Level 3",
-    place: "Annavaram",
-    date: "April 11, 2026",
-    time: "7:00 PM Onwards",
-    description: "Advance Psychotherapy class for Level 1,2,3 students."
-  }];
+    name: "Psychotherapy", 
+    place: "Annavaram", 
+    date: "April 11, 2026", 
+    time: "7:00 AM Onwards", 
+    description:"Advance Level Psychotherapy calss"
+  }
+];
 
-  window.showSection = (id) => {
-    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  };
-
-  // Past Events Logic
-  const evCont = document.getElementById('eventLinksContainer');
-  PAST_EVENTS.forEach((ev, i) => {
-    evCont.innerHTML += `
-        <div class="card" onclick="openGallery(${i})" style="cursor:pointer">
-            <h3>${ev.name}</h3>
-            <p style="font-size: 0.85rem; color: #555;">${ev.description.substring(0, 50)}...</p>
-            <p style="color:var(--secondary); font-weight: bold; margin-top: 10px;">View Photos →</p>
-        </div>`;
-  });
-
-  window.openGallery = (i) => {
-    const ev = PAST_EVENTS[i];
-    document.getElementById('eventListView').style.display = 'none';
-    document.getElementById('galleryView').style.display = 'block';
-    document.getElementById('currentEventTitle').innerText = ev.name;
-    document.getElementById('currentEventDesc').innerText = ev.description;
-    const gc = document.getElementById('galleryContainer');
-    gc.innerHTML = '';
-    ev.photos.forEach(p => gc.innerHTML += `<img src="${p}" class="gallery-item" onclick="openLightbox('${p}')">`);
-  };
-
-  window.closeGallery = () => {
-    document.getElementById('eventListView').style.display = 'block';
-    document.getElementById('galleryView').style.display = 'none';
-  };
-
-  // Upcoming Events Logic
-  const upCont = document.getElementById('upcomingList');
-  FUTURE_EVENTS.forEach(ev => {
-    upCont.innerHTML += `
-        <div class="card upcoming-card">
-            <h3 style="color: var(--accent);">${ev.name}</h3>
-            <p><strong>📍 Place:</strong> ${ev.place}</p>
-            <p><strong>📅 Date:</strong> ${ev.date}</p>
-            <p><strong>⏰ Time:</strong> ${ev.time}</p>
-            <p style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; color: #444;">${ev.description}</p>
-        </div>`;
-  });
-
-  window.openLightbox = (src) => {
-    document.getElementById('lbImg').src = src;
-    document.getElementById('lightbox').style.display = 'flex';
-  };
+  let curSet = []; let curIdx = 0;
+  window.openLightbox = (i, photos) => { curSet = photos; curIdx = i; document.getElementById('lbImg').src = curSet[curIdx]; document.getElementById('lightbox').style.display = 'flex'; };
   window.closeLightbox = () => document.getElementById('lightbox').style.display = 'none';
+  window.changeImg = (step) => { curIdx = (curIdx + step + curSet.length) % curSet.length; document.getElementById('lbImg').src = curSet[curIdx]; };
 
-  // Firebase/CRUD Logic
+  window.showSection = (id) => { document.querySelectorAll('section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
+
   window.saveStudent = async () => {
-    const selectedCourses = Array.from(document.querySelectorAll('input[name="course"]:checked')).map(cb => cb.value);
-    const data = {
-        name: document.getElementById('stName').value,
-        phone: document.getElementById('stPhone').value,
-        aadhar: document.getElementById('stAadhar').value,
-        venue: document.getElementById('stVenue').value,
-        courses: selectedCourses,
-        refName: document.getElementById('refName').value,
-        refPhone: document.getElementById('refPhone').value,
-        refAadhar: document.getElementById('refAadhar').value,
-        timestamp: Date.now()
-    };
-    if(!data.name) return alert("Please enter Student Name");
-    await addDoc(collection(db, "students"), data);
-    alert("Registered Successfully!");
-    location.reload();
+    const courses = {}; document.querySelectorAll('.reg-cb:checked').forEach(cb => { courses[cb.value] = document.querySelector(`.reg-yr[data-c="${cb.value}"]`).value || "N/A"; });
+    await addDoc(collection(db, "students"), {
+        name: document.getElementById('stName').value, phone: document.getElementById('stPhone').value,
+        aadhar: document.getElementById('stAadhar').value, venue: document.getElementById('stVenue').value,
+        refName: document.getElementById('refName').value, refPhone: document.getElementById('refPhone').value,
+        courses, timestamp: Date.now()
+    });
+    alert("Saved!"); location.reload();
   };
 
-  // Synchronize both list views
   onSnapshot(query(collection(db, "students"), orderBy("timestamp", "desc")), (snap) => {
-    const list = document.getElementById('studentList');
-    list.innerHTML = '';
-    allStudents = []; // Reset local array
-    
-    snap.forEach(docSnap => {
-        const s = docSnap.data();
-        const id = docSnap.id;
-        const studentObj = { id, ...s };
-        allStudents.push(studentObj);
-        window[`data_${id}`] = s;
-
-        const cardHtml = `
-            <div class="card">
-                <strong>${s.name}</strong><br>
-                <small>📞 ${s.phone || 'N/A'}</small><br>
-                <small>🆔 ${s.aadhar || 'N/A'}</small><br>
-                <small>📚 ${s.courses.join(", ")}</small>
-                <div class="btn-group">
-                    <button class="action-btn" style="background:var(--primary)" onclick="viewStudent('${id}')">View</button>
-                    <button class="action-btn" style="background:#f39c12" onclick="editStudent('${id}')">Edit</button>
-                    <button class="action-btn" style="background:#e74c3c" onclick="deleteStudent('${id}', '${s.name}')">Delete</button>
-                </div>
-            </div>`;
-        list.innerHTML += cardHtml;
+    const recent = document.getElementById('recentList'); recent.innerHTML = '';
+    window.allStudents = [];
+    snap.forEach(d => {
+        const s = d.data(); s.id = d.id; window.allStudents.push(s); window[`data_${s.id}`] = s;
+        if(window.allStudents.length <= 6) recent.innerHTML += renderCard(s);
     });
-    // Update search results if user was searching
-    filterStudents();
   });
 
-  // Search Logic
-  window.filterStudents = () => {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const resultsContainer = document.getElementById('searchResults');
-    resultsContainer.innerHTML = '';
-
-    if(query === "") {
-        resultsContainer.innerHTML = "<p style='color:#666;'>Enter a name, phone, or aadhar to see results.</p>";
-        return;
-    }
-
-    const filtered = allStudents.filter(s => 
-        (s.name && s.name.toLowerCase().includes(query)) ||
-        (s.phone && s.phone.includes(query)) ||
-        (s.aadhar && s.aadhar.includes(query))
-    );
-
-    if(filtered.length === 0) {
-        resultsContainer.innerHTML = "<p>No matching students found.</p>";
-    } else {
-        filtered.forEach(s => {
-            resultsContainer.innerHTML += `
-                <div class="card" style="border-left: 5px solid var(--secondary);">
-                    <strong>${s.name}</strong><br>
-                    <small>📞 ${s.phone || 'N/A'}</small><br>
-                    <small>🆔 ${s.aadhar || 'N/A'}</small><br>
-                    <div class="btn-group">
-                        <button class="action-btn" style="background:var(--primary)" onclick="viewStudent('${s.id}')">View Full Details</button>
-                    </div>
-                </div>`;
-        });
-    }
-  };
+  function renderCard(s) {
+      return `<div class="card" style="padding:10px"><strong>${s.name}</strong><br><span style="font-size:0.8rem">${s.phone} | ${s.aadhar || ''}</span>
+        <div class="btn-group-small">
+            <button class="sm-btn btn-view" onclick="viewStudent('${s.id}')">View</button>
+            <button class="sm-btn btn-edit" onclick="editStudent('${s.id}')">Edit</button>
+            <button class="sm-btn btn-del" onclick="deleteStudent('${s.id}')">Del</button>
+        </div></div>`;
+  }
 
   window.viewStudent = (id) => {
     const s = window[`data_${id}`];
-    document.getElementById('modalBody').innerHTML = `
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2 style="color: var(--primary);">Full Student Record</h2>
-        <div style="text-align: left; line-height: 1.8;">
-            <p><strong>Name:</strong> ${s.name}</p>
-            <p><strong>Phone:</strong> ${s.phone}</p>
-            <p><strong>Aadhar:</strong> ${s.aadhar}</p>
-            <p><strong>Venue:</strong> ${s.venue}</p>
-            <p><strong>Courses:</strong> ${s.courses.join(", ")}</p>
-            <hr style="margin: 15px 0;">
-            <p><strong>Reference Name:</strong> ${s.refName}</p>
-            <p><strong>Reference Phone:</strong> ${s.refPhone}</p>
-            <p><strong>Reference Aadhar:</strong> ${s.refAadhar}</p>
-        </div>`;
+    let cHtml = ""; courseList.forEach(c => { if(s.courses && s.courses[c]) cHtml += `<li>${c}: ${s.courses[c]}</li>`; });
+    document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span>
+        <h3 style="margin-top:0">${s.name}</h3>
+        <p><strong>Phone:</strong> ${s.phone}<br><strong>Aadhar:</strong> ${s.aadhar || 'N/A'}<br><strong>Branch:</strong> ${s.venue || 'N/A'}<br><strong>Ref:</strong> ${s.refName || 'N/A'}</p><hr><ul>${cHtml}</ul>`;
     document.getElementById('studentModal').style.display = 'flex';
   };
 
   window.editStudent = (id) => {
     const s = window[`data_${id}`];
+    let cHtml = ""; courseList.forEach(c => {
+        const chk = (s.courses && s.courses[c]) ? 'checked' : '';
+        const yr = (s.courses && s.courses[c]) ? s.courses[c] : '';
+        cHtml += `<div class="course-row"><span class="course-label">${c}</span><input type="checkbox" class="ed-cb" value="${c}" ${chk}> <input type="number" class="ed-yr" data-c="${c}" value="${yr}"></div>`;
+    });
     document.getElementById('modalBody').innerHTML = `
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2>Edit Details</h2>
-        <input type="text" id="editName" value="${s.name}" placeholder="Name">
-        <input type="tel" id="editPhone" value="${s.phone}" placeholder="Phone">
-        <input type="text" id="editAadhar" value="${s.aadhar}" placeholder="Aadhar">
-        <input type="text" id="editVenue" value="${s.venue}" placeholder="Venue">
-        <button class="main-btn" onclick="updateStudent('${id}')">Update Record</button>`;
+        <h4>Update Student</h4>
+        <label>Name</label><input type="text" id="edName" value="${s.name}">
+        <label>Phone</label><input type="text" id="edPhone" value="${s.phone}">
+        <label>Aadhar</label><input type="text" id="edAadhar" value="${s.aadhar || ''}">
+        <label>Branch</label><input type="text" id="edVenue" value="${s.venue || ''}">
+        <label>Reference</label><input type="text" id="edRefName" value="${s.refName || ''}">
+        <div style="background:#f4f4f4; padding:10px; border-radius:5px;">${cHtml}</div>
+        <button class="main-btn" onclick="updateStudent('${id}')" style="margin-top:15px">Save Changes</button>`;
     document.getElementById('studentModal').style.display = 'flex';
   };
 
   window.updateStudent = async (id) => {
-    await updateDoc(doc(db, "students", id), {
-        name: document.getElementById('editName').value,
-        phone: document.getElementById('editPhone').value,
-        aadhar: document.getElementById('editAadhar').value,
-        venue: document.getElementById('editVenue').value
+    const courses = {}; document.querySelectorAll('.ed-cb:checked').forEach(cb => { courses[cb.value] = document.querySelector(`.ed-yr[data-c="${cb.value}"]`).value || "N/A"; });
+    await updateDoc(doc(db, "students", id), { 
+        name: document.getElementById('edName').value, phone: document.getElementById('edPhone').value, 
+        aadhar: document.getElementById('edAadhar').value, venue: document.getElementById('edVenue').value,
+        refName: document.getElementById('edRefName').value, courses 
     });
-    closeModal();
-    alert("Record Updated Successfully!");
+    closeModal(); alert("Updated!");
   };
 
-  window.deleteStudent = async (id, name) => {
-    if(confirm(`Delete ${name}'s record permanently?`)) {
-        await deleteDoc(doc(db, "students", id));
-    }
+  window.deleteStudent = async (id) => { if(confirm("Delete?")) await deleteDoc(doc(db, "students", id)); };
+
+  window.filterStudents = () => {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const res = document.getElementById('searchResults'); res.innerHTML = '';
+    if(!q) return;
+    window.allStudents.filter(s => 
+        (s.name && s.name.toLowerCase().includes(q)) || (s.phone && s.phone.includes(q)) || (s.aadhar && s.aadhar.includes(q))
+    ).forEach(s => res.innerHTML += renderCard(s));
   };
 
   window.closeModal = () => document.getElementById('studentModal').style.display = 'none';
+
+  const pastGrid = document.getElementById('pastEventsGrid');
+  PAST_EVENTS.forEach(ev => {
+      const d = document.createElement('div'); d.className = 'card past-card'; 
+      d.innerHTML = `<h3>${ev.name}</h3><p class="event-desc">${ev.description}</p><button class="main-btn" style="padding:8px; font-size:0.8rem">View Photos</button>`;
+      d.onclick = () => {
+          document.getElementById('eventListView').style.display='none'; document.getElementById('galleryView').style.display='block';
+          document.getElementById('galleryTitle').innerText = ev.name;
+          const cont = document.getElementById('galleryContainer'); cont.innerHTML = '';
+          ev.photos.forEach((p, i) => { 
+              const img = document.createElement('img'); img.src = p; img.className = 'seq-img';
+              img.onclick = (e) => { e.stopPropagation(); openLightbox(i, ev.photos); }; 
+              cont.appendChild(img); 
+          });
+      };
+      pastGrid.appendChild(d);
+  });
+  window.closeGallery = () => { document.getElementById('eventListView').style.display='block'; document.getElementById('galleryView').style.display='none'; };
+  
+  const upGrid = document.getElementById('upcomingGrid');
+  FUTURE_EVENTS.forEach(ev => { 
+      upGrid.innerHTML += `<div class="card upcoming-card">
+        <h3>${ev.name}</h3>
+        <p style="margin:5px 0">📍 ${ev.place}</p>
+        <p style="margin:5px 0; font-size:0.9rem">📅 ${ev.date} | ⏰ ${ev.time}</p>
+        <p class="event-desc">${ev.description}</p>
+      </div>`; 
+  });
 </script>
 </body>
 </html>
