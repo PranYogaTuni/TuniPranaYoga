@@ -48,6 +48,11 @@
         .photo-sequence { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 15px; }
         .seq-img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; cursor: pointer; }
 
+        /* Course Analytics Styles */
+        .course-stat-card { background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+        .count-badge { background: var(--secondary); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.8rem; float: right; }
+        .inner-search { margin-top: 10px; padding: 6px; font-size: 0.8rem; height: 30px; }
+
         #lightbox { display: none; position: fixed; z-index: 5000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
         #lbImg { max-width: 85%; max-height: 80%; border: 3px solid white; }
         .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); color: white; border: none; font-size: 2rem; padding: 20px; cursor: pointer; border-radius: 50%; }
@@ -142,6 +147,10 @@
             </div>
         </div>
         <button class="main-btn" onclick="saveStudent()">Save Registration</button>
+        
+        <h3 style="margin-top:35px; border-top: 2px solid #eee; padding-top: 20px;">Number of students registered</h3>
+        <div id="courseAnalytics" class="grid"></div>
+
         <h3 style="margin-top:25px;">Recent Students</h3>
         <div id="recentList" class="grid"></div>
     </div>
@@ -201,15 +210,31 @@
 
   window.showSection = (id) => { document.querySelectorAll('section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
 
+  // Updated save function to stay on the same section
   window.saveStudent = async () => {
-    const courses = {}; document.querySelectorAll('.reg-cb:checked').forEach(cb => { courses[cb.value] = document.querySelector(`.reg-yr[data-c="${cb.value}"]`).value || "N/A"; });
+    const courses = {}; 
+    document.querySelectorAll('.reg-cb:checked').forEach(cb => { 
+        courses[cb.value] = document.querySelector(`.reg-yr[data-c="${cb.value}"]`).value || "N/A"; 
+    });
+    
     await addDoc(collection(db, "students"), {
         name: document.getElementById('stName').value, phone: document.getElementById('stPhone').value,
         aadhar: document.getElementById('stAadhar').value, venue: document.getElementById('stVenue').value,
         refName: document.getElementById('refName').value, refPhone: document.getElementById('refPhone').value,
         courses, timestamp: Date.now()
     });
-    alert("Saved!"); location.reload();
+    
+    alert("Saved Successfully!");
+    
+    // Manual clear to stay on page instead of reload()
+    document.getElementById('stName').value = '';
+    document.getElementById('stPhone').value = '';
+    document.getElementById('stAadhar').value = '';
+    document.getElementById('stVenue').value = '';
+    document.getElementById('refName').value = '';
+    document.getElementById('refPhone').value = '';
+    document.querySelectorAll('.reg-cb').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.reg-yr').forEach(yr => yr.value = '');
   };
 
   onSnapshot(query(collection(db, "students"), orderBy("timestamp", "desc")), (snap) => {
@@ -219,7 +244,45 @@
         const s = d.data(); s.id = d.id; window.allStudents.push(s); window[`data_${s.id}`] = s;
         if(window.allStudents.length <= 6) recent.innerHTML += renderCard(s);
     });
+    renderCourseAnalytics();
   });
+
+  function renderCourseAnalytics() {
+      const container = document.getElementById('courseAnalytics');
+      if (!container) return;
+      container.innerHTML = '';
+      courseList.forEach(course => {
+          const courseStudents = window.allStudents.filter(s => s.courses && s.courses[course]);
+          const div = document.createElement('div');
+          div.className = 'course-stat-card';
+          div.innerHTML = `
+            <strong>${course}</strong> <span class="count-badge">${courseStudents.length}</span>
+            <input type="text" class="inner-search" placeholder="Search in ${course}..." onkeyup="searchByCourse(this, '${course}')">
+            <div id="results-${course.replace(/[^a-z0-9]/gi, '')}" style="margin-top:10px; max-height: 150px; overflow-y: auto;"></div>
+          `;
+          container.appendChild(div);
+      });
+  }
+
+  window.searchByCourse = (input, course) => {
+      const q = input.value.toLowerCase();
+      const resDiv = document.getElementById(`results-${course.replace(/[^a-z0-9]/gi, '')}`);
+      resDiv.innerHTML = '';
+      if(!q) return;
+      const filtered = window.allStudents.filter(s => 
+          s.courses && s.courses[course] && (
+            (s.name && s.name.toLowerCase().includes(q)) || 
+            (s.phone && s.phone.includes(q)) || 
+            (s.aadhar && s.aadhar.includes(q))
+          )
+      );
+      filtered.forEach(s => {
+          resDiv.innerHTML += `<div style="border-bottom:1px solid #eee; padding:5px 0; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center;">
+            <span>${s.name} <br><small>${s.phone}</small></span>
+            <button onclick="viewStudent('${s.id}')" style="font-size:0.6rem; padding:2px 5px; cursor: pointer;">View</button>
+          </div>`;
+      });
+  };
 
   function renderCard(s) {
       return `<div class="card" style="padding:10px"><strong>${s.name}</strong><br><span style="font-size:0.8rem">${s.phone} | ${s.aadhar || ''}</span>
