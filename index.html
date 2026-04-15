@@ -24,11 +24,10 @@
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
-        /* Fixed Layout: Name -> Checkbox -> Year */
         .course-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.85rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         .course-label { flex: 1; font-weight: 600; min-width: 120px; }
         .reg-cb, .ed-cb { width: 18px !important; height: 18px !important; margin: 0 !important; cursor: pointer; }
-        .year-input { width: 75px !important; padding: 4px !important; margin: 0 !important; border: 1px solid #ccc; border-radius: 4px; }
+        .course-date { width: 130px !important; padding: 4px !important; margin: 0 !important; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; }
 
         label { font-weight: bold; display: block; margin-bottom: 3px; font-size: 0.85rem; }
         input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; }
@@ -36,22 +35,25 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
         .card { border: 1px solid #eee; padding: 15px; border-radius: 10px; background: #fff; }
         .upcoming-card { border-left: 5px solid var(--accent); }
+        .class-card { border-left: 5px solid var(--secondary); }
         .event-desc { font-size: 0.85rem; color: #666; margin: 10px 0; line-height: 1.4; }
         
-        .btn-group-small { display: flex; gap: 4px; margin-top: 10px; }
-        .sm-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; font-size: 0.7rem; text-transform: uppercase; }
+        .student-card { border: 1px solid #e0e0e0; padding: 15px; border-radius: 12px; background: #fff; transition: transform 0.2s, box-shadow 0.2s; position: relative; }
+        .student-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .student-card .st-name { color: var(--primary); font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; display: block; }
+        .student-card .st-meta { font-size: 0.8rem; color: #666; margin-bottom: 12px; line-height: 1.5; display: block; }
+
+        .btn-group-small { display: flex; gap: 6px; margin-top: 10px; }
+        .sm-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; font-size: 0.75rem; text-transform: uppercase; transition: opacity 0.2s; }
+        .sm-btn:hover { opacity: 0.9; }
         .btn-view { background: var(--primary); }
         .btn-edit { background: var(--secondary); }
         .btn-del { background: var(--danger); }
+        
         .main-btn { background: var(--secondary); color: white; padding: 12px; width: 100%; font-size: 1rem; border: none; cursor: pointer; border-radius: 6px; font-weight: bold; }
 
         .photo-sequence { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 15px; }
         .seq-img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; cursor: pointer; }
-
-        /* Course Analytics Styles */
-        .course-stat-card { background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
-        .count-badge { background: var(--secondary); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.8rem; float: right; }
-        .inner-search { margin-top: 10px; padding: 6px; font-size: 0.8rem; height: 30px; }
 
         #lightbox { display: none; position: fixed; z-index: 5000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
         #lbImg { max-width: 85%; max-height: 80%; border: 3px solid white; }
@@ -79,6 +81,7 @@
         <a onclick="showSection('courses')">COURSES</a>
         <a onclick="showSection('events')">PAST EVENTS</a>
         <a onclick="showSection('upcoming')">UPCOMING EVENTS</a>
+        <a onclick="showSection('upcomingClasses')">UPCOMING CLASSES</a>
         <a onclick="showSection('registration')">REGISTRATION</a>
         <a onclick="showSection('search')">SEARCH</a>
     </div>
@@ -119,8 +122,15 @@
 
 <section id="upcoming">
     <div class="container">
-        <h2>Upcoming Schedule</h2>
+        <h2>Upcoming Events Schedule</h2>
         <div id="upcomingGrid" class="grid"></div>
+    </div>
+</section>
+
+<section id="upcomingClasses">
+    <div class="container">
+        <h2>Upcoming Classes Schedule</h2>
+        <div id="upcomingClassesGrid" class="grid"></div>
     </div>
 </section>
 
@@ -129,30 +139,69 @@
         <h2 style="margin-top:0">Student Registration</h2>
         <div class="form-grid">
             <div>
+                <label>Class Name</label><input type="text" id="className">
+                <label>Class Date</label><input type="date" id="regDate">
+                
+                <label>Trainer Name</label>
+                <div style="display: flex; gap: 15px; margin-bottom: 10px; font-size: 0.85rem; flex-wrap: wrap;">
+                    <label style="font-weight:normal;"><input type="radio" name="trainer" value="A.Srinivas" style="width:auto; margin-bottom:0;"> A.Srinivas</label>
+                    <label style="font-weight:normal;"><input type="radio" name="trainer" value="A.Poornima Ganesh" style="width:auto; margin-bottom:0;"> A.Poornima Ganesh</label>
+                    <label style="font-weight:normal;"><input type="radio" name="trainer" value="G.Nagesh" style="width:auto; margin-bottom:0;"> G.Nagesh</label>
+                    <label style="font-weight:normal;"><input type="radio" name="trainer" value="M.P.Subbaramaiah gaaru" style="width:auto; margin-bottom:0;"> M.P.Subbaramaiah gaaru</label>
+                    <label style="font-weight:normal;"><input type="radio" name="trainer" value="B.Chenniah gaaru" style="width:auto; margin-bottom:0;"> B.Chenniah gaaru</label>
+                </div>
+            
+                <label>Aadhar Number</label><input type="text" id="stAadhar">
                 <label>Full Name</label><input type="text" id="stName">
                 <label>Phone</label><input type="tel" id="stPhone">
-                <label>Aadhar Number</label><input type="text" id="stAadhar">
-                <label>Branch</label><input type="text" id="stVenue">
+                <label>Place</label><input type="text" id="stVenue">
             </div>
             <div>
-                <div style="background:#fdfdfd; padding:12px; border-radius:8px; border:1px solid #ddd;">
-                    <label>Courses Completed:</label>
-                    <div class="course-row"><span class="course-label">Basic (L1)</span><input type="checkbox" class="reg-cb" value="Basic (L1)"><input type="number" class="year-input reg-yr" data-c="Basic (L1)" placeholder="Year"></div>
-                    <div class="course-row"><span class="course-label">Advance (L2)</span><input type="checkbox" class="reg-cb" value="Advance (L2)"><input type="number" class="year-input reg-yr" data-c="Advance (L2)" placeholder="Year"></div>
-                    <div class="course-row"><span class="course-label">Psychotherapy (L3)</span><input type="checkbox" class="reg-cb" value="Psychotherapy (L3)"><input type="number" class="year-input reg-yr" data-c="Psychotherapy (L3)" placeholder="Year"></div>
-                    <div class="course-row"><span class="course-label">HamsaVedaYoga</span><input type="checkbox" class="reg-cb" value="HamsaVedaYoga"><input type="number" class="year-input reg-yr" data-c="HamsaVedaYoga" placeholder="Year"></div>
+                <div style="background:#fff3e0; padding:12px; border-radius:8px; border:1px solid #ffe0b2; margin-bottom:15px;">
+                    <label>Total Fee</label><input type="number" id="totalFee" oninput="calcBalance()" placeholder="0">
+                    
+                    <label>Installments & Dates</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 5px; align-items: center;">
+                        <input type="number" class="inst-amt" placeholder="1st" oninput="calcBalance()"> <input type="date" class="inst-date">
+                        <input type="number" class="inst-amt" placeholder="2nd" oninput="calcBalance()"> <input type="date" class="inst-date">
+                        <input type="number" class="inst-amt" placeholder="3rd" oninput="calcBalance()"> <input type="date" class="inst-date">
+                        <input type="number" class="inst-amt" placeholder="4th" oninput="calcBalance()"> <input type="date" class="inst-date">
+                    </div>
+                    <label style="margin-top:10px; color: var(--danger);">Balance Amount</label>
+                    <input type="number" id="balanceAmt" readonly style="background:#eee; font-weight:bold; color:var(--danger);">
                 </div>
-                <label style="margin-top:10px;">Ref Name</label><input type="text" id="refName">
-                <label>Ref Contact</label><input type="tel" id="refPhone">
+
+                <div style="background:#fdfdfd; padding:12px; border-radius:8px; border:1px solid #ddd; margin-bottom: 15px;">
+                    <label>Courses Completed:</label>
+                    <div class="course-row">
+                        <span class="course-label">Basic (L1)</span>
+                        <input type="checkbox" class="reg-cb" id="cb-L1" value="Basic (L1)" onchange="updateCourseLogic()">
+                        <input type="date" class="course-date reg-date-input" data-c="Basic (L1)">
+                    </div>
+                    <div class="course-row">
+                        <span class="course-label">Advance (L2)</span>
+                        <input type="checkbox" class="reg-cb" id="cb-L2" value="Advance (L2)" disabled onchange="updateCourseLogic()">
+                        <input type="date" class="course-date reg-date-input" data-c="Advance (L2)" disabled>
+                    </div>
+                    <div class="course-row">
+                        <span class="course-label">Psychotherapy (L3)</span>
+                        <input type="checkbox" class="reg-cb" id="cb-L3" value="Psychotherapy (L3)" disabled onchange="updateCourseLogic()">
+                        <input type="date" class="course-date reg-date-input" data-c="Psychotherapy (L3)" disabled>
+                    </div>
+                    <div class="course-row">
+                        <span class="course-label">HamsaVedaYoga</span>
+                        <input type="checkbox" class="reg-cb" id="cb-HVY" value="HamsaVedaYoga" disabled>
+                        <input type="date" class="course-date reg-date-input" data-c="HamsaVedaYoga" disabled>
+                    </div>
+                </div>
+
+                <label>Ref Name</label><input type="text" id="refName">
             </div>
         </div>
         <button class="main-btn" onclick="saveStudent()">Save Registration</button>
         
-        <h3 style="margin-top:35px; border-top: 2px solid #eee; padding-top: 20px;">Number of students registered</h3>
-        <div id="courseAnalytics" class="grid"></div>
-
-        <h3 style="margin-top:25px;">Recent Students</h3>
-        <div id="recentList" class="grid"></div>
+        <h3 style="margin-top:35px; color: var(--primary); border-left: 5px solid var(--secondary); padding-left: 10px;">Recent Registrations</h3>
+        <div id="recentList" class="grid" style="margin-top:20px;"></div>
     </div>
 </section>
 
@@ -187,21 +236,49 @@
     photos: ["https://i.postimg.cc/0jGtPtCB/IMG-20260329-054539564-HDR.jpg", "https://i.postimg.cc/L8Qx9gzF/IMG-20260329-160642945-HDR.jpg", "https://i.postimg.cc/jSS8Y4Js/IMG-20260329-161125130-HDR.jpg", "https://i.postimg.cc/fRCQZ397/IMG-20260329-162337260-HDR.jpg"] 
   }];
 
-  const FUTURE_EVENTS = [{ 
-    name: "Rama Chanting", 
-    place: "Annavaram Devsthanam", 
-    date: "April 11, 2026", 
-    time: "5:00 AM - 7:00 AM", 
-    description: "Chanting the Rama Mantra." 
-  },
-  {
-    name: "Psychotherapy", 
-    place: "Annavaram", 
-    date: "April 11, 2026", 
-    time: "7:00 AM Onwards", 
-    description:"Advance Level Psychotherapy calss"
-  }
-];
+  const FUTURE_EVENTS = [];
+
+  /* Array for Upcoming Classes */
+  const FUTURE_CLASSES = [{
+    name: "Psychic self defence", 
+    place: "Payakarao Peta Prana Yoga centre ", 
+    date: "April 19, 2026", 
+    time: "8:00 AM Onwards", 
+    description:"To protect ourselves from psychic attacks"
+  }];
+
+  /* Course Sequential Logic Function */
+  window.updateCourseLogic = () => {
+    const l1 = document.getElementById('cb-L1');
+    const l2 = document.getElementById('cb-L2');
+    const l3 = document.getElementById('cb-L3');
+    const hvy = document.getElementById('cb-HVY');
+
+    const l2Inputs = document.querySelectorAll('[data-c="Advance (L2)"]');
+    const l3Inputs = document.querySelectorAll('[data-c="Psychotherapy (L3)"]');
+    const hvyInputs = document.querySelectorAll('[data-c="HamsaVedaYoga"]');
+
+    l2.disabled = !l1.checked;
+    l2Inputs.forEach(el => el.disabled = !l1.checked);
+    if(!l1.checked) { l2.checked = false; }
+
+    l3.disabled = !l2.checked;
+    l3Inputs.forEach(el => el.disabled = !l2.checked);
+    if(!l2.checked) { l3.checked = false; }
+
+    hvy.disabled = !l3.checked;
+    hvyInputs.forEach(el => el.disabled = !l3.checked);
+    if(!l3.checked) { hvy.checked = false; }
+  };
+
+  window.calcBalance = () => {
+      const total = parseFloat(document.getElementById('totalFee').value) || 0;
+      let paid = 0;
+      document.querySelectorAll('.inst-amt').forEach(input => {
+          paid += parseFloat(input.value) || 0;
+      });
+      document.getElementById('balanceAmt').value = total - paid;
+  };
 
   let curSet = []; let curIdx = 0;
   window.openLightbox = (i, photos) => { curSet = photos; curIdx = i; document.getElementById('lbImg').src = curSet[curIdx]; document.getElementById('lightbox').style.display = 'flex'; };
@@ -210,31 +287,39 @@
 
   window.showSection = (id) => { document.querySelectorAll('section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
 
-  // Updated save function to stay on the same section
   window.saveStudent = async () => {
     const courses = {}; 
     document.querySelectorAll('.reg-cb:checked').forEach(cb => { 
-        courses[cb.value] = document.querySelector(`.reg-yr[data-c="${cb.value}"]`).value || "N/A"; 
+        courses[cb.value] = document.querySelector(`.reg-date-input[data-c="${cb.value}"]`).value || "N/A"; 
     });
+
+    const installments = [];
+    const amts = document.querySelectorAll('.inst-amt');
+    const dates = document.querySelectorAll('.inst-date');
+    amts.forEach((amt, i) => {
+        if(amt.value) installments.push({ amount: amt.value, date: dates[i].value || "N/A" });
+    });
+
+    const trainer = document.querySelector('input[name="trainer"]:checked')?.value || "N/A";
     
     await addDoc(collection(db, "students"), {
-        name: document.getElementById('stName').value, phone: document.getElementById('stPhone').value,
-        aadhar: document.getElementById('stAadhar').value, venue: document.getElementById('stVenue').value,
-        refName: document.getElementById('refName').value, refPhone: document.getElementById('refPhone').value,
-        courses, timestamp: Date.now()
+        aadhar: document.getElementById('stAadhar').value, 
+        name: document.getElementById('stName').value, 
+        phone: document.getElementById('stPhone').value,
+        venue: document.getElementById('stVenue').value,
+        className: document.getElementById('className').value,
+        regDate: document.getElementById('regDate').value,
+        trainer: trainer,
+        totalFee: document.getElementById('totalFee').value,
+        installments: installments,
+        balance: document.getElementById('balanceAmt').value,
+        refName: document.getElementById('refName').value, 
+        courses, 
+        timestamp: Date.now()
     });
     
     alert("Saved Successfully!");
-    
-    // Manual clear to stay on page instead of reload()
-    document.getElementById('stName').value = '';
-    document.getElementById('stPhone').value = '';
-    document.getElementById('stAadhar').value = '';
-    document.getElementById('stVenue').value = '';
-    document.getElementById('refName').value = '';
-    document.getElementById('refPhone').value = '';
-    document.querySelectorAll('.reg-cb').forEach(cb => cb.checked = false);
-    document.querySelectorAll('.reg-yr').forEach(yr => yr.value = '');
+    location.reload();
   };
 
   onSnapshot(query(collection(db, "students"), orderBy("timestamp", "desc")), (snap) => {
@@ -244,61 +329,39 @@
         const s = d.data(); s.id = d.id; window.allStudents.push(s); window[`data_${s.id}`] = s;
         if(window.allStudents.length <= 6) recent.innerHTML += renderCard(s);
     });
-    renderCourseAnalytics();
   });
 
-  function renderCourseAnalytics() {
-      const container = document.getElementById('courseAnalytics');
-      if (!container) return;
-      container.innerHTML = '';
-      courseList.forEach(course => {
-          const courseStudents = window.allStudents.filter(s => s.courses && s.courses[course]);
-          const div = document.createElement('div');
-          div.className = 'course-stat-card';
-          div.innerHTML = `
-            <strong>${course}</strong> <span class="count-badge">${courseStudents.length}</span>
-            <input type="text" class="inner-search" placeholder="Search in ${course}..." onkeyup="searchByCourse(this, '${course}')">
-            <div id="results-${course.replace(/[^a-z0-9]/gi, '')}" style="margin-top:10px; max-height: 150px; overflow-y: auto;"></div>
-          `;
-          container.appendChild(div);
-      });
-  }
-
-  window.searchByCourse = (input, course) => {
-      const q = input.value.toLowerCase();
-      const resDiv = document.getElementById(`results-${course.replace(/[^a-z0-9]/gi, '')}`);
-      resDiv.innerHTML = '';
-      if(!q) return;
-      const filtered = window.allStudents.filter(s => 
-          s.courses && s.courses[course] && (
-            (s.name && s.name.toLowerCase().includes(q)) || 
-            (s.phone && s.phone.includes(q)) || 
-            (s.aadhar && s.aadhar.includes(q))
-          )
-      );
-      filtered.forEach(s => {
-          resDiv.innerHTML += `<div style="border-bottom:1px solid #eee; padding:5px 0; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center;">
-            <span>${s.name} <br><small>${s.phone}</small></span>
-            <button onclick="viewStudent('${s.id}')" style="font-size:0.6rem; padding:2px 5px; cursor: pointer;">View</button>
-          </div>`;
-      });
-  };
-
   function renderCard(s) {
-      return `<div class="card" style="padding:10px"><strong>${s.name}</strong><br><span style="font-size:0.8rem">${s.phone} | ${s.aadhar || ''}</span>
+      return `
+      <div class="student-card">
+        <span class="st-name">${s.name}</span>
+        <span class="st-meta">
+            📞 ${s.phone}<br>
+            🆔 ${s.aadhar || 'N/A'}<br>
+            📍 ${s.venue || 'N/A'}
+        </span>
         <div class="btn-group-small">
             <button class="sm-btn btn-view" onclick="viewStudent('${s.id}')">View</button>
             <button class="sm-btn btn-edit" onclick="editStudent('${s.id}')">Edit</button>
             <button class="sm-btn btn-del" onclick="deleteStudent('${s.id}')">Del</button>
-        </div></div>`;
+        </div>
+      </div>`;
   }
 
   window.viewStudent = (id) => {
     const s = window[`data_${id}`];
     let cHtml = ""; courseList.forEach(c => { if(s.courses && s.courses[c]) cHtml += `<li>${c}: ${s.courses[c]}</li>`; });
     document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span>
-        <h3 style="margin-top:0">${s.name}</h3>
-        <p><strong>Phone:</strong> ${s.phone}<br><strong>Aadhar:</strong> ${s.aadhar || 'N/A'}<br><strong>Branch:</strong> ${s.venue || 'N/A'}<br><strong>Ref:</strong> ${s.refName || 'N/A'}</p><hr><ul>${cHtml}</ul>`;
+    <h3 style="margin-top:0">${s.name}</h3>
+        <p>
+            <strong>Phone:</strong> ${s.phone}<br>
+            <strong>Aadhar:</strong> ${s.aadhar || 'N/A'}<br>
+            <strong>Branch:</strong> ${s.venue || 'N/A'}<br>
+            <strong>Ref:</strong> ${s.refName || 'N/A'}
+        </p>
+        <hr>
+        <strong>Courses Completed:</strong>
+        <ul>${cHtml || '<li>None</li>'}</ul>`;
     document.getElementById('studentModal').style.display = 'flex';
   };
 
@@ -307,14 +370,14 @@
     let cHtml = ""; courseList.forEach(c => {
         const chk = (s.courses && s.courses[c]) ? 'checked' : '';
         const yr = (s.courses && s.courses[c]) ? s.courses[c] : '';
-        cHtml += `<div class="course-row"><span class="course-label">${c}</span><input type="checkbox" class="ed-cb" value="${c}" ${chk}> <input type="number" class="ed-yr" data-c="${c}" value="${yr}"></div>`;
+        cHtml += `<div class="course-row"><span class="course-label">${c}</span><input type="checkbox" class="ed-cb" value="${c}" ${chk}> <input type="date" class="course-date ed-yr" data-c="${c}" value="${yr}"></div>`;
     });
     document.getElementById('modalBody').innerHTML = `
         <span class="close-btn" onclick="closeModal()">&times;</span>
         <h4>Update Student</h4>
+        <label>Aadhar</label><input type="text" id="edAadhar" value="${s.aadhar || ''}">
         <label>Name</label><input type="text" id="edName" value="${s.name}">
         <label>Phone</label><input type="text" id="edPhone" value="${s.phone}">
-        <label>Aadhar</label><input type="text" id="edAadhar" value="${s.aadhar || ''}">
         <label>Branch</label><input type="text" id="edVenue" value="${s.venue || ''}">
         <label>Reference</label><input type="text" id="edRefName" value="${s.refName || ''}">
         <div style="background:#f4f4f4; padding:10px; border-radius:5px;">${cHtml}</div>
@@ -325,8 +388,7 @@
   window.updateStudent = async (id) => {
     const courses = {}; document.querySelectorAll('.ed-cb:checked').forEach(cb => { courses[cb.value] = document.querySelector(`.ed-yr[data-c="${cb.value}"]`).value || "N/A"; });
     await updateDoc(doc(db, "students", id), { 
-        name: document.getElementById('edName').value, phone: document.getElementById('edPhone').value, 
-        aadhar: document.getElementById('edAadhar').value, venue: document.getElementById('edVenue').value,
+        aadhar: document.getElementById('edAadhar').value, name: document.getElementById('edName').value, phone: document.getElementById('edPhone').value,  venue: document.getElementById('edVenue').value,
         refName: document.getElementById('edRefName').value, courses 
     });
     closeModal(); alert("Updated!");
@@ -361,17 +423,33 @@
       };
       pastGrid.appendChild(d);
   });
-  window.closeGallery = () => { document.getElementById('eventListView').style.display='block'; document.getElementById('galleryView').style.display='none'; };
-  
+
   const upGrid = document.getElementById('upcomingGrid');
-  FUTURE_EVENTS.forEach(ev => { 
-      upGrid.innerHTML += `<div class="card upcoming-card">
-        <h3>${ev.name}</h3>
-        <p style="margin:5px 0">📍 ${ev.place}</p>
-        <p style="margin:5px 0; font-size:0.9rem">📅 ${ev.date} | ⏰ ${ev.time}</p>
-        <p class="event-desc">${ev.description}</p>
-      </div>`; 
+  FUTURE_EVENTS.forEach(ev => {
+    const d = document.createElement('div'); d.className = 'card upcoming-card';
+    d.innerHTML = `<h3>${ev.name}</h3>
+      <p><strong>📍 ${ev.place}</strong></p>
+      <p>📅 ${ev.date} | 🕒 ${ev.time}</p>
+      <p class="event-desc">${ev.description}</p>`;
+    upGrid.appendChild(d);
   });
+
+  /* Render Upcoming Classes */
+  const upClassGrid = document.getElementById('upcomingClassesGrid');
+  if(FUTURE_CLASSES.length === 0) {
+    upClassGrid.innerHTML = '<p>No classes scheduled at the moment. Please check back later.</p>';
+  } else {
+    FUTURE_CLASSES.forEach(cls => {
+      const d = document.createElement('div'); d.className = 'card class-card';
+      d.innerHTML = `<h3>${cls.name}</h3>
+        <p><strong>📍 ${cls.place}</strong></p>
+        <p>📅 ${cls.date} | 🕒 ${cls.time}</p>
+        <p class="event-desc">${cls.description}</p>`;
+      upClassGrid.appendChild(d);
+    });
+  }
+
+  window.closeGallery = () => { document.getElementById('eventListView').style.display='block'; document.getElementById('galleryView').style.display='none'; };
 </script>
 </body>
 </html>
