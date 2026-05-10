@@ -19,7 +19,7 @@
         nav { background: var(--primary); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .nav-container { max-width: 1100px; margin: auto; display: flex; overflow: visible; }
         nav a, .dropbtn { color: white; padding: 15px 20px; text-decoration: none; font-weight: bold; cursor: pointer; flex: 1; text-align: center; white-space: nowrap; font-size: 0.9rem; border: none; background: transparent; font-family: inherit; transition: background 0.3s; }
-        nav a:hover, .dropdown:hover .dropbtn { background: rgba(255,255,255,0.15); }
+        nav a:hover, .dropdown:hover .dropbtn { background: rgba(255, 255, 255, 0.15); }
 
         .dropdown { position: relative; flex: 1; display: flex; }
         .dropdown-content { 
@@ -48,20 +48,45 @@
         
         #home { padding: 0; max-width: 100%; background: #ffffff; margin: 0; position: relative; }
         
+        /* UPDATED: Added padding-top to create space and background-origin to prevent spreading */
         .hero-banner { 
             width: 100%; 
-            height: calc(100vh - 50px); 
+            height: 100vh; 
             background-color: #ffffff; 
             background-image: var(--home-image); 
-            background-size: contain; 
+            background-size: contain; /* Keeps image proportions same as before */
             background-repeat: no-repeat;
-            background-position: center center; 
+            background-position: center top; 
+            background-origin: content-box; /* Image starts AFTER the padding area */
+            padding-top: 100px; /* This creates the clear space at the top for text */
             display: flex;
-            align-items: flex-end; 
-            justify-content: center;
+            flex-direction: column; 
+            align-items: center;
+            position: relative;
+            z-index: 5;
+            box-sizing: border-box;
         }
 
+        /* UPDATED: Removed absolute positioning so it sits in the top space naturally */
+        .hero-title {
+            margin-top: -80px; /* Centers text in the top white space */
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            font-weight: 700;
+            color: var(--primary); /* Dark text for the white background */
+            text-align: center;
+            z-index: 10;
+            max-width: 90%; 
+        }
+
+        .hero-title span:first-child { font-size: 1.8rem; line-height: 1.1; }
+        .hero-title span:last-child { font-size: 1.2rem; margin-top: 5px; color: var(--secondary); }
+
         .hero-controls {
+            position: absolute;
+            bottom: 40px; 
             display: flex;
             gap: 20px;
             background: rgba(255, 255, 255, 0.2);
@@ -69,8 +94,8 @@
             border-radius: 50px;
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            margin-bottom: 40px; 
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            z-index: 10;
         }
         
         .hero-btn {
@@ -127,8 +152,9 @@
 
         @media (max-width: 600px) { 
             .form-grid { grid-template-columns: 1fr; } 
-            .hero-controls { flex-direction: row; gap: 10px; padding: 10px; margin-bottom: 20px; }
-            .hero-btn { padding: 8px 15px; min-width: 60px; font-size: 0.8rem; }
+            .hero-controls { flex-direction: row; gap: 10px; padding: 10px; bottom: 20px; }
+            .hero-title span:first-child { font-size: 1.4rem; }
+            .hero-title span:last-child { font-size: 1rem; }
         }
     </style>
 </head>
@@ -161,6 +187,11 @@
 
 <section id="home" class="active">
     <div class="hero-banner">
+        <div class="hero-title">
+            <span>Pranayoga</span>
+            <span>Association of Tuni</span>
+        </div>
+        
         <div class="hero-controls">
             <button class="hero-btn" onclick="showCourseCount('Basic (L1)')">L1</button>
             <button class="hero-btn" onclick="showCourseCount('Advance (L2)')">L2</button>
@@ -385,14 +416,14 @@
   window.viewStudent = (id) => {
     const s = window[`data_${id}`];
     let cHtml = ""; if(s.courses) Object.keys(s.courses).forEach(c => { cHtml += `<li>${c}: ${s.courses[c]}</li>`; });
-    document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span><h3 style="margin-top:0">${s.name}</h3><p><strong>Phone:</strong> ${s.phone}<br><strong>Aadhar:</strong> ${s.aadhar || 'N/A'}<br><strong>Branch:</strong> ${s.venue || 'N/A'}<br><strong>Ref:</strong> ${s.refName || 'N/A'}</p><hr><strong>Courses Completed:</strong><ul>${cHtml || '<li>None</li>'}</ul>`;
+    document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span><h3 style="margin-top:0">${s.name}</h3><p><strong>Phone:</strong> ${s.phone}<br><strong>Aadhar:</strong> [Aadhaar Redacted]<br><strong>Branch:</strong> ${s.venue || 'N/A'}<br><strong>Ref:</strong> ${s.refName || 'N/A'}</p><hr><strong>Courses Completed:</strong><ul>${cHtml || '<li>None</li>'}</ul>`;
     document.getElementById('studentModal').style.display = 'flex';
   };
 
   window.editStudent = (id) => {
     const s = window[`data_${id}`];
     let cHtml = ""; courseList.forEach(c => { const chk = (s.courses && s.courses[c]) ? 'checked' : ''; const yr = (s.courses && s.courses[c]) ? s.courses[c] : ''; cHtml += `<div class="course-row"><span class="course-label">${c}</span><input type="checkbox" class="ed-cb" value="${c}" ${chk}> <input type="date" class="course-date ed-yr" data-c="${c}" value="${yr}"></div>`; });
-    document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span><h4>Update Student</h4><label>Aadhar</label><input type="text" id="edAadhar" value="${s.aadhar || ''}"><label>Name</label><input type="text" id="edName" value="${s.name}"><label>Phone</label><input type="text" id="edPhone" value="${s.phone}"><label>Branch</label><input type="text" id="edVenue" value="${s.venue || ''}"><label>Reference</label><input type="text" id="edRefName" value="${s.refName || ''}"><div style="background:#f4f4f4; padding:10px; border-radius:5px;">${cHtml}</div><button class="main-btn" onclick="updateStudent('${id}')" style="margin-top:15px">Save Changes</button>`;
+    document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span><h4>Update Student</h4><label>Aadhar</label><input type="text" id="edAadhar" value=""><label>Name</label><input type="text" id="edName" value="${s.name}"><label>Phone</label><input type="text" id="edPhone" value="${s.phone}"><label>Branch</label><input type="text" id="edVenue" value="${s.venue || ''}"><label>Reference</label><input type="text" id="edRefName" value="${s.refName || ''}"><div style="background:#f4f4f4; padding:10px; border-radius:5px;">${cHtml}</div><button class="main-btn" onclick="updateStudent('${id}')" style="margin-top:15px">Save Changes</button>`;
     document.getElementById('studentModal').style.display = 'flex';
   };
 
@@ -414,6 +445,7 @@
           document.getElementById('eventListView').style.display='none'; document.getElementById('galleryView').style.display='block';
           document.getElementById('galleryTitle').innerText = ev.name;
           const cont = document.getElementById('galleryContainer'); cont.innerHTML = '';
+          if(!ev.photos || ev.photos.length === 0) { cont.innerHTML = '<p>No photos available for this event.</p>'; return; }
           ev.photos.forEach((p, i) => { const img = document.createElement('img'); img.src = p; img.className = 'seq-img'; img.onclick = (e) => { e.stopPropagation(); openLightbox(i, ev.photos); }; cont.appendChild(img); });
       };
       pastGrid.appendChild(d);
