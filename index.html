@@ -5,25 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prana Yoga Tuni Portal</title>
     <style>
-        :root { --primary: #2c3e50; --secondary: #27ae60; --accent: #e67e22; --light: #f4f7f6; --danger: #e74c3c; }
+        :root { 
+            --home-image: url('https://i.postimg.cc/8CWWw5w3/Whats-App-Image-2026-04-15-at-3-46-26-PM.jpg');
+            --primary: #2c3e50; 
+            --secondary: #27ae60; 
+            --accent: #e67e22; 
+            --light: #f4f7f6; 
+            --danger: #e74c3c; 
+        }
+
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--light); color: #333; }
         
-        .main-header { background: white; padding: 20px; text-align: center; border-bottom: 4px solid var(--secondary); }
-        .header-content { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
-        .logo-img { height: 80px; border-radius: 8px; }
-        .main-title { color: var(--primary); margin: 0; font-size: 2.2rem; font-weight: 800; }
-        
-        nav { background: var(--primary); position: sticky; top: 0; z-index: 1000; }
-        .nav-container { max-width: 1100px; margin: auto; display: flex; overflow-x: auto; }
-        nav a { color: white; padding: 15px; text-decoration: none; font-weight: bold; cursor: pointer; flex: 1; text-align: center; white-space: nowrap; font-size: 0.9rem; }
-        nav a:hover { background: rgba(255,255,255,0.1); }
+        nav { background: var(--primary); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-container { max-width: 1100px; margin: auto; display: flex; overflow: visible; }
+        nav a, .dropbtn { color: white; padding: 15px 20px; text-decoration: none; font-weight: bold; cursor: pointer; flex: 1; text-align: center; white-space: nowrap; font-size: 0.9rem; border: none; background: transparent; font-family: inherit; transition: background 0.3s; }
+        nav a:hover, .dropdown:hover .dropbtn { background: rgba(255,255,255,0.15); }
+
+        .dropdown { position: relative; flex: 1; display: flex; }
+        .dropdown-content { 
+            display: none; 
+            position: absolute; 
+            background-color: white; 
+            min-width: 220px; 
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.15); 
+            z-index: 1001; 
+            top: 100%; 
+            right: 0; 
+            border-radius: 0 0 8px 8px; 
+            overflow: hidden;
+            border-top: 3px solid var(--secondary); 
+            animation: fadeIn 0.2s ease-out; 
+        }
+
+        .dropdown-content a { color: var(--primary) !important; text-align: left; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; width: 100%; box-sizing: border-box; display: block; font-weight: 500; transition: all 0.2s; }
+        .dropdown-content a:hover { background-color: #f8f9fa; padding-left: 25px; color: var(--secondary) !important; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         section { padding: 20px; max-width: 1100px; margin: auto; display: none; }
         section.active { display: block; }
-        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
+        #home { padding: 0; max-width: 100%; background: #ffffff; margin: 0; position: relative; }
+        
+        .hero-banner { 
+            width: 100%; 
+            height: calc(100vh - 50px); 
+            background-color: #ffffff; 
+            background-image: var(--home-image); 
+            background-size: contain; 
+            background-repeat: no-repeat;
+            background-position: center center; 
+            display: flex;
+            align-items: flex-end; /* Align buttons to the bottom */
+            justify-content: center;
+        }
+
+        .hero-controls {
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            margin-bottom: 30px; /* Space from the bottom edge of the image */
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .hero-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            min-width: 80px;
+        }
+        .hero-btn:hover { transform: scale(1.1); background: var(--secondary); }
+        .hero-btn.hvy { background: var(--accent); }
+
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .course-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.85rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         .course-label { flex: 1; font-weight: 600; min-width: 120px; }
         .reg-cb, .ed-cb { width: 18px !important; height: 18px !important; margin: 0 !important; cursor: pointer; }
@@ -34,10 +100,6 @@
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
         .card { border: 1px solid #eee; padding: 15px; border-radius: 10px; background: #fff; }
-        .upcoming-card { border-left: 5px solid var(--accent); }
-        .class-card { border-left: 5px solid var(--secondary); }
-        .event-desc { font-size: 0.85rem; color: #666; margin: 10px 0; line-height: 1.4; }
-        
         .student-card { border: 1px solid #e0e0e0; padding: 15px; border-radius: 12px; background: #fff; transition: transform 0.2s, box-shadow 0.2s; position: relative; }
         .student-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .student-card .st-name { color: var(--primary); font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; display: block; }
@@ -45,7 +107,6 @@
 
         .btn-group-small { display: flex; gap: 6px; margin-top: 10px; }
         .sm-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; font-size: 0.75rem; text-transform: uppercase; transition: opacity 0.2s; }
-        .sm-btn:hover { opacity: 0.9; }
         .btn-view { background: var(--primary); }
         .btn-edit { background: var(--secondary); }
         .btn-del { background: var(--danger); }
@@ -64,26 +125,28 @@
         .modal-content { background: white; width: 100%; max-width: 500px; padding: 20px; border-radius: 12px; position: relative; max-height: 90vh; overflow-y: auto; }
         .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; }
 
-        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { 
+            .form-grid { grid-template-columns: 1fr; } 
+            .hero-controls { flex-direction: row; gap: 10px; padding: 10px; margin-bottom: 20px; }
+            .hero-btn { padding: 8px 15px; min-width: 60px; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
 
-<header class="main-header">
-    <div class="header-content">
-        <img src="https://i.postimg.cc/BZxLJWxc/Screenshot-37.jpg" alt="Logo" class="logo-img">
-        <h1 class="main-title">Prana Yoga Tuni</h1>
-    </div>
-</header>
-
 <nav>
     <div class="nav-container">
-        <a onclick="showSection('courses')">COURSES</a>
-        <a onclick="showSection('events')">PAST EVENTS</a>
-        <a onclick="showSection('upcoming')">UPCOMING EVENTS</a>
-        <a onclick="showSection('upcomingClasses')">UPCOMING CLASSES</a>
-        <a onclick="showSection('registration')">REGISTRATION</a>
-        <a onclick="showSection('search')">SEARCH</a>
+        <a onclick="showSection('home')">HOME</a>
+        <div class="dropdown">
+            <button class="dropbtn">180+ &#9662;</button>
+            <div class="dropdown-content">
+                <a onclick="showSection('events')">PAST EVENTS</a>
+                <a onclick="showSection('upcoming')">UPCOMING EVENTS</a>
+                <a onclick="showSection('upcomingClasses')">UPCOMING CLASSES</a>
+                <a onclick="showSection('registration')">REGISTRATION</a>
+                <a onclick="showSection('search')">SEARCH</a>
+            </div>
+        </div>
     </div>
 </nav>
 
@@ -96,14 +159,12 @@
     <button class="nav-btn" id="nextBtn" onclick="changeImg(1)">&#10095;</button>
 </div>
 
-<section id="courses" class="active">
-    <div class="container">
-        <h2>Available Courses</h2>
-        <div class="grid">
-            <div class="card"><h3>Basic (L1)</h3><p>Secrets of Nature Level 1</p></div>
-            <div class="card"><h3>Advance (L2)</h3><p>Secrets of Nature Level 2</p></div>
-            <div class="card"><h3>Psychotherapy (L3)</h3><p>Secrets of Nature Level 3</p></div>
-            <div class="card"><h3>HamsaVedaYoga</h3><p>To accelerate the evolutionary development of the soul so that the person can be of greater service to mankind and the planet Earth.</p></div>
+<section id="home" class="active">
+    <div class="hero-banner">
+        <div class="hero-controls">
+            <button class="hero-btn" onclick="showCourseCount('Basic (L1)')">L1</button>
+            <button class="hero-btn" onclick="showCourseCount('Advance (L2)')">L2</button>
+            <button class="hero-btn hvy" onclick="showCourseCount('HamsaVedaYoga')">HVY</button>
         </div>
     </div>
 </section>
@@ -159,7 +220,6 @@
             <div>
                 <div style="background:#fff3e0; padding:12px; border-radius:8px; border:1px solid #ffe0b2; margin-bottom:15px;">
                     <label>Total Fee</label><input type="number" id="totalFee" oninput="calcBalance()" placeholder="0">
-                    
                     <label>Installments & Dates</label>
                     <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 5px; align-items: center;">
                         <input type="number" class="inst-amt" placeholder="1st" oninput="calcBalance()"> <input type="date" class="inst-date">
@@ -173,33 +233,15 @@
 
                 <div style="background:#fdfdfd; padding:12px; border-radius:8px; border:1px solid #ddd; margin-bottom: 15px;">
                     <label>Courses Completed:</label>
-                    <div class="course-row">
-                        <span class="course-label">Basic (L1)</span>
-                        <input type="checkbox" class="reg-cb" id="cb-L1" value="Basic (L1)" onchange="updateCourseLogic()">
-                        <input type="date" class="course-date reg-date-input" data-c="Basic (L1)">
-                    </div>
-                    <div class="course-row">
-                        <span class="course-label">Advance (L2)</span>
-                        <input type="checkbox" class="reg-cb" id="cb-L2" value="Advance (L2)" disabled onchange="updateCourseLogic()">
-                        <input type="date" class="course-date reg-date-input" data-c="Advance (L2)" disabled>
-                    </div>
-                    <div class="course-row">
-                        <span class="course-label">Psychotherapy (L3)</span>
-                        <input type="checkbox" class="reg-cb" id="cb-L3" value="Psychotherapy (L3)" disabled onchange="updateCourseLogic()">
-                        <input type="date" class="course-date reg-date-input" data-c="Psychotherapy (L3)" disabled>
-                    </div>
-                    <div class="course-row">
-                        <span class="course-label">HamsaVedaYoga</span>
-                        <input type="checkbox" class="reg-cb" id="cb-HVY" value="HamsaVedaYoga" disabled>
-                        <input type="date" class="course-date reg-date-input" data-c="HamsaVedaYoga" disabled>
-                    </div>
+                    <div class="course-row"><span class="course-label">Basic (L1)</span><input type="checkbox" class="reg-cb" id="cb-L1" value="Basic (L1)" onchange="updateCourseLogic()"><input type="date" class="course-date reg-date-input" data-c="Basic (L1)"></div>
+                    <div class="course-row"><span class="course-label">Advance (L2)</span><input type="checkbox" class="reg-cb" id="cb-L2" value="Advance (L2)" disabled onchange="updateCourseLogic()"><input type="date" class="course-date reg-date-input" data-c="Advance (L2)" disabled></div>
+                    <div class="course-row"><span class="course-label">Psychotherapy (L3)</span><input type="checkbox" class="reg-cb" id="cb-L3" value="Psychotherapy (L3)" disabled onchange="updateCourseLogic()"><input type="date" class="course-date reg-date-input" data-c="Psychotherapy (L3)" disabled></div>
+                    <div class="course-row"><span class="course-label">HamsaVedaYoga</span><input type="checkbox" class="reg-cb" id="cb-HVY" value="HamsaVedaYoga" disabled><input type="date" class="course-date reg-date-input" data-c="HamsaVedaYoga" disabled></div>
                 </div>
-
                 <label>Ref Name</label><input type="text" id="refName">
             </div>
         </div>
         <button class="main-btn" onclick="saveStudent()">Save Registration</button>
-        
         <h3 style="margin-top:35px; color: var(--primary); border-left: 5px solid var(--secondary); padding-left: 10px;">Recent Registrations</h3>
         <div id="recentList" class="grid" style="margin-top:20px;"></div>
     </div>
@@ -215,7 +257,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAQgkFX0y6MPohf2PrOechpMUYZHA2aFg4",
@@ -230,53 +272,53 @@
   const db = getFirestore(app);
   const courseList = ["Basic (L1)", "Advance (L2)", "Psychotherapy (L3)", "HamsaVedaYoga"];
 
+  window.showCourseCount = async (courseName) => {
+    try {
+        const coll = collection(db, "students");
+        const q = query(coll, where(`courses.${courseName}`, "!=", ""));
+        const snapshot = await getCountFromServer(q);
+        const count = snapshot.data().count;
+
+        document.getElementById('modalBody').innerHTML = `
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div style="text-align:center; padding:20px;">
+                <h2 style="color:var(--secondary); margin-bottom:10px;">${courseName}</h2>
+                <p style="font-size:1.2rem;">Total completions recorded:</p>
+                <div style="font-size:4rem; font-weight:bold; color:var(--primary); margin:20px 0;">${count}</div>
+                <p style="color:#666;">Students</p>
+            </div>`;
+        document.getElementById('studentModal').style.display = 'flex';
+    } catch (e) {
+        console.error("Error getting count: ", e);
+        alert("Could not fetch data. Please try again.");
+    }
+  };
+
   const PAST_EVENTS = [{ 
     name: "Sri Rama Navami", 
     description: "A wonderful session with over 1500 participants chanting the Rama Mantra together.",
     photos: ["https://i.postimg.cc/0jGtPtCB/IMG-20260329-054539564-HDR.jpg", "https://i.postimg.cc/L8Qx9gzF/IMG-20260329-160642945-HDR.jpg", "https://i.postimg.cc/jSS8Y4Js/IMG-20260329-161125130-HDR.jpg", "https://i.postimg.cc/fRCQZ397/IMG-20260329-162337260-HDR.jpg"] 
   }];
-
   const FUTURE_EVENTS = [];
+  const FUTURE_CLASSES = [{ name: "Psychic self defence", place: "Payakarao Peta Prana Yoga centre ", date: "April 19, 2026", time: "8:00 AM Onwards", description:"To protect ourselves from psychic attacks" }];
 
-  /* Array for Upcoming Classes */
-  const FUTURE_CLASSES = [{
-    name: "Psychic self defence", 
-    place: "Payakarao Peta Prana Yoga centre ", 
-    date: "April 19, 2026", 
-    time: "8:00 AM Onwards", 
-    description:"To protect ourselves from psychic attacks"
-  }];
-
-  /* Course Sequential Logic Function */
   window.updateCourseLogic = () => {
     const l1 = document.getElementById('cb-L1');
     const l2 = document.getElementById('cb-L2');
     const l3 = document.getElementById('cb-L3');
     const hvy = document.getElementById('cb-HVY');
-
     const l2Inputs = document.querySelectorAll('[data-c="Advance (L2)"]');
     const l3Inputs = document.querySelectorAll('[data-c="Psychotherapy (L3)"]');
     const hvyInputs = document.querySelectorAll('[data-c="HamsaVedaYoga"]');
-
-    l2.disabled = !l1.checked;
-    l2Inputs.forEach(el => el.disabled = !l1.checked);
-    if(!l1.checked) { l2.checked = false; }
-
-    l3.disabled = !l2.checked;
-    l3Inputs.forEach(el => el.disabled = !l2.checked);
-    if(!l2.checked) { l3.checked = false; }
-
-    hvy.disabled = !l3.checked;
-    hvyInputs.forEach(el => el.disabled = !l3.checked);
-    if(!l3.checked) { hvy.checked = false; }
+    l2.disabled = !l1.checked; l2Inputs.forEach(el => el.disabled = !l1.checked); if(!l1.checked) { l2.checked = false; }
+    l3.disabled = !l2.checked; l3Inputs.forEach(el => el.disabled = !l2.checked); if(!l2.checked) { l3.checked = false; }
+    hvy.disabled = !l3.checked; hvyInputs.forEach(el => el.disabled = !l3.checked); if(!l3.checked) { hvy.checked = false; }
   };
 
   window.calcBalance = () => {
       const total = parseFloat(document.getElementById('totalFee').value) || 0;
       let paid = 0;
-      document.querySelectorAll('.inst-amt').forEach(input => {
-          paid += parseFloat(input.value) || 0;
-      });
+      document.querySelectorAll('.inst-amt').forEach(input => { paid += parseFloat(input.value) || 0; });
       document.getElementById('balanceAmt').value = total - paid;
   };
 
@@ -284,171 +326,70 @@
   window.openLightbox = (i, photos) => { curSet = photos; curIdx = i; document.getElementById('lbImg').src = curSet[curIdx]; document.getElementById('lightbox').style.display = 'flex'; };
   window.closeLightbox = () => document.getElementById('lightbox').style.display = 'none';
   window.changeImg = (step) => { curIdx = (curIdx + step + curSet.length) % curSet.length; document.getElementById('lbImg').src = curSet[curIdx]; };
-
-  window.showSection = (id) => { document.querySelectorAll('section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
+  window.showSection = (id) => { 
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active')); 
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   window.saveStudent = async () => {
-    const courses = {}; 
-    document.querySelectorAll('.reg-cb:checked').forEach(cb => { 
-        courses[cb.value] = document.querySelector(`.reg-date-input[data-c="${cb.value}"]`).value || "N/A"; 
-    });
-
-    const installments = [];
-    const amts = document.querySelectorAll('.inst-amt');
-    const dates = document.querySelectorAll('.inst-date');
-    amts.forEach((amt, i) => {
-        if(amt.value) installments.push({ amount: amt.value, date: dates[i].value || "N/A" });
-    });
-
+    const courses = {}; document.querySelectorAll('.reg-cb:checked').forEach(cb => { courses[cb.value] = document.querySelector(`.reg-date-input[data-c="${cb.value}"]`).value || "N/A"; });
+    const installments = []; const amts = document.querySelectorAll('.inst-amt'); const dates = document.querySelectorAll('.inst-date');
+    amts.forEach((amt, i) => { if(amt.value) installments.push({ amount: amt.value, date: dates[i].value || "N/A" }); });
     const trainer = document.querySelector('input[name="trainer"]:checked')?.value || "N/A";
-    
-    await addDoc(collection(db, "students"), {
-        aadhar: document.getElementById('stAadhar').value, 
-        name: document.getElementById('stName').value, 
-        phone: document.getElementById('stPhone').value,
-        venue: document.getElementById('stVenue').value,
-        className: document.getElementById('className').value,
-        regDate: document.getElementById('regDate').value,
-        trainer: trainer,
-        totalFee: document.getElementById('totalFee').value,
-        installments: installments,
-        balance: document.getElementById('balanceAmt').value,
-        refName: document.getElementById('refName').value, 
-        courses, 
-        timestamp: Date.now()
-    });
-    
-    alert("Saved Successfully!");
-    location.reload();
+    await addDoc(collection(db, "students"), { aadhar: document.getElementById('stAadhar').value, name: document.getElementById('stName').value, phone: document.getElementById('stPhone').value, venue: document.getElementById('stVenue').value, className: document.getElementById('className').value, regDate: document.getElementById('regDate').value, trainer, totalFee: document.getElementById('totalFee').value, installments, balance: document.getElementById('balanceAmt').value, refName: document.getElementById('refName').value, courses, timestamp: Date.now() });
+    alert("Saved Successfully!"); location.reload();
   };
 
   onSnapshot(query(collection(db, "students"), orderBy("timestamp", "desc")), (snap) => {
     const recent = document.getElementById('recentList'); recent.innerHTML = '';
-    window.allStudents = [];
-    snap.forEach(d => {
-        const s = d.data(); s.id = d.id; window.allStudents.push(s); window[`data_${s.id}`] = s;
-        if(window.allStudents.length <= 6) recent.innerHTML += renderCard(s);
-    });
+    window.allStudents = []; snap.forEach(d => { const s = d.data(); s.id = d.id; window.allStudents.push(s); window[`data_${s.id}`] = s; if(window.allStudents.length <= 6) recent.innerHTML += renderCard(s); });
   });
 
   function renderCard(s) {
-      return `
-      <div class="student-card">
-        <span class="st-name">${s.name}</span>
-        <span class="st-meta">
-            📞 ${s.phone}<br>
-            🆔 ${s.aadhar || 'N/A'}<br>
-            📍 ${s.venue || 'N/A'}
-        </span>
-        <div class="btn-group-small">
-            <button class="sm-btn btn-view" onclick="viewStudent('${s.id}')">View</button>
-            <button class="sm-btn btn-edit" onclick="editStudent('${s.id}')">Edit</button>
-            <button class="sm-btn btn-del" onclick="deleteStudent('${s.id}')">Del</button>
-        </div>
-      </div>`;
+      return `<div class="student-card"><span class="st-name">${s.name}</span><span class="st-meta">📞 ${s.phone}<br>🆔 ${s.aadhar || 'N/A'}<br>📍 ${s.venue || 'N/A'}</span><div class="btn-group-small"><button class="sm-btn btn-view" onclick="viewStudent('${s.id}')">View</button><button class="sm-btn btn-edit" onclick="editStudent('${s.id}')">Edit</button><button class="sm-btn btn-del" onclick="deleteStudent('${s.id}')">Del</button></div></div>`;
   }
 
   window.viewStudent = (id) => {
     const s = window[`data_${id}`];
     let cHtml = ""; courseList.forEach(c => { if(s.courses && s.courses[c]) cHtml += `<li>${c}: ${s.courses[c]}</li>`; });
-    document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span>
-    <h3 style="margin-top:0">${s.name}</h3>
-        <p>
-            <strong>Phone:</strong> ${s.phone}<br>
-            <strong>Aadhar:</strong> ${s.aadhar || 'N/A'}<br>
-            <strong>Branch:</strong> ${s.venue || 'N/A'}<br>
-            <strong>Ref:</strong> ${s.refName || 'N/A'}
-        </p>
-        <hr>
-        <strong>Courses Completed:</strong>
-        <ul>${cHtml || '<li>None</li>'}</ul>`;
+    document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span><h3 style="margin-top:0">${s.name}</h3><p><strong>Phone:</strong> ${s.phone}<br><strong>Aadhar:</strong> ${s.aadhar || 'N/A'}<br><strong>Branch:</strong> ${s.venue || 'N/A'}<br><strong>Ref:</strong> ${s.refName || 'N/A'}</p><hr><strong>Courses Completed:</strong><ul>${cHtml || '<li>None</li>'}</ul>`;
     document.getElementById('studentModal').style.display = 'flex';
   };
 
   window.editStudent = (id) => {
     const s = window[`data_${id}`];
-    let cHtml = ""; courseList.forEach(c => {
-        const chk = (s.courses && s.courses[c]) ? 'checked' : '';
-        const yr = (s.courses && s.courses[c]) ? s.courses[c] : '';
-        cHtml += `<div class="course-row"><span class="course-label">${c}</span><input type="checkbox" class="ed-cb" value="${c}" ${chk}> <input type="date" class="course-date ed-yr" data-c="${c}" value="${yr}"></div>`;
-    });
-    document.getElementById('modalBody').innerHTML = `
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h4>Update Student</h4>
-        <label>Aadhar</label><input type="text" id="edAadhar" value="${s.aadhar || ''}">
-        <label>Name</label><input type="text" id="edName" value="${s.name}">
-        <label>Phone</label><input type="text" id="edPhone" value="${s.phone}">
-        <label>Branch</label><input type="text" id="edVenue" value="${s.venue || ''}">
-        <label>Reference</label><input type="text" id="edRefName" value="${s.refName || ''}">
-        <div style="background:#f4f4f4; padding:10px; border-radius:5px;">${cHtml}</div>
-        <button class="main-btn" onclick="updateStudent('${id}')" style="margin-top:15px">Save Changes</button>`;
+    let cHtml = ""; courseList.forEach(c => { const chk = (s.courses && s.courses[c]) ? 'checked' : ''; const yr = (s.courses && s.courses[c]) ? s.courses[c] : ''; cHtml += `<div class="course-row"><span class="course-label">${c}</span><input type="checkbox" class="ed-cb" value="${c}" ${chk}> <input type="date" class="course-date ed-yr" data-c="${c}" value="${yr}"></div>`; });
+    document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span><h4>Update Student</h4><label>Aadhar</label><input type="text" id="edAadhar" value="${s.aadhar || ''}"><label>Name</label><input type="text" id="edName" value="${s.name}"><label>Phone</label><input type="text" id="edPhone" value="${s.phone}"><label>Branch</label><input type="text" id="edVenue" value="${s.venue || ''}"><label>Reference</label><input type="text" id="edRefName" value="${s.refName || ''}"><div style="background:#f4f4f4; padding:10px; border-radius:5px;">${cHtml}</div><button class="main-btn" onclick="updateStudent('${id}')" style="margin-top:15px">Save Changes</button>`;
     document.getElementById('studentModal').style.display = 'flex';
   };
 
   window.updateStudent = async (id) => {
     const courses = {}; document.querySelectorAll('.ed-cb:checked').forEach(cb => { courses[cb.value] = document.querySelector(`.ed-yr[data-c="${cb.value}"]`).value || "N/A"; });
-    await updateDoc(doc(db, "students", id), { 
-        aadhar: document.getElementById('edAadhar').value, name: document.getElementById('edName').value, phone: document.getElementById('edPhone').value,  venue: document.getElementById('edVenue').value,
-        refName: document.getElementById('edRefName').value, courses 
-    });
+    await updateDoc(doc(db, "students", id), { aadhar: document.getElementById('edAadhar').value, name: document.getElementById('edName').value, phone: document.getElementById('edPhone').value, venue: document.getElementById('edVenue').value, refName: document.getElementById('edRefName').value, courses });
     closeModal(); alert("Updated!");
   };
 
   window.deleteStudent = async (id) => { if(confirm("Delete?")) await deleteDoc(doc(db, "students", id)); };
-
-  window.filterStudents = () => {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const res = document.getElementById('searchResults'); res.innerHTML = '';
-    if(!q) return;
-    window.allStudents.filter(s => 
-        (s.name && s.name.toLowerCase().includes(q)) || (s.phone && s.phone.includes(q)) || (s.aadhar && s.aadhar.includes(q))
-    ).forEach(s => res.innerHTML += renderCard(s));
-  };
-
+  window.filterStudents = () => { const q = document.getElementById('searchInput').value.toLowerCase(); const res = document.getElementById('searchResults'); res.innerHTML = ''; if(!q) return; window.allStudents.filter(s => (s.name && s.name.toLowerCase().includes(q)) || (s.phone && s.phone.includes(q)) || (s.aadhar && s.aadhar.includes(q))).forEach(s => res.innerHTML += renderCard(s)); };
   window.closeModal = () => document.getElementById('studentModal').style.display = 'none';
 
   const pastGrid = document.getElementById('pastEventsGrid');
   PAST_EVENTS.forEach(ev => {
-      const d = document.createElement('div'); d.className = 'card past-card'; 
-      d.innerHTML = `<h3>${ev.name}</h3><p class="event-desc">${ev.description}</p><button class="main-btn" style="padding:8px; font-size:0.8rem">View Photos</button>`;
+      const d = document.createElement('div'); d.className = 'card past-card'; d.innerHTML = `<h3>${ev.name}</h3><p class="event-desc">${ev.description}</p><button class="main-btn" style="padding:8px; font-size:0.8rem">View Photos</button>`;
       d.onclick = () => {
           document.getElementById('eventListView').style.display='none'; document.getElementById('galleryView').style.display='block';
           document.getElementById('galleryTitle').innerText = ev.name;
           const cont = document.getElementById('galleryContainer'); cont.innerHTML = '';
-          ev.photos.forEach((p, i) => { 
-              const img = document.createElement('img'); img.src = p; img.className = 'seq-img';
-              img.onclick = (e) => { e.stopPropagation(); openLightbox(i, ev.photos); }; 
-              cont.appendChild(img); 
-          });
+          ev.photos.forEach((p, i) => { const img = document.createElement('img'); img.src = p; img.className = 'seq-img'; img.onclick = (e) => { e.stopPropagation(); openLightbox(i, ev.photos); }; cont.appendChild(img); });
       };
       pastGrid.appendChild(d);
   });
 
   const upGrid = document.getElementById('upcomingGrid');
-  FUTURE_EVENTS.forEach(ev => {
-    const d = document.createElement('div'); d.className = 'card upcoming-card';
-    d.innerHTML = `<h3>${ev.name}</h3>
-      <p><strong>📍 ${ev.place}</strong></p>
-      <p>📅 ${ev.date} | 🕒 ${ev.time}</p>
-      <p class="event-desc">${ev.description}</p>`;
-    upGrid.appendChild(d);
-  });
-
-  /* Render Upcoming Classes */
   const upClassGrid = document.getElementById('upcomingClassesGrid');
-  if(FUTURE_CLASSES.length === 0) {
-    upClassGrid.innerHTML = '<p>No classes scheduled at the moment. Please check back later.</p>';
-  } else {
-    FUTURE_CLASSES.forEach(cls => {
-      const d = document.createElement('div'); d.className = 'card class-card';
-      d.innerHTML = `<h3>${cls.name}</h3>
-        <p><strong>📍 ${cls.place}</strong></p>
-        <p>📅 ${cls.date} | 🕒 ${cls.time}</p>
-        <p class="event-desc">${cls.description}</p>`;
-      upClassGrid.appendChild(d);
-    });
-  }
-
+  if(FUTURE_CLASSES.length === 0) { upClassGrid.innerHTML = '<p>No classes scheduled.</p>'; } 
+  else { FUTURE_CLASSES.forEach(cls => { const d = document.createElement('div'); d.className = 'card class-card'; d.innerHTML = `<h3>${cls.name}</h3><p><strong>📍 ${cls.place}</strong></p><p>📅 ${cls.date} | 🕒 ${cls.time}</p><p class="event-desc">${cls.description}</p>`; upClassGrid.appendChild(d); }); }
   window.closeGallery = () => { document.getElementById('eventListView').style.display='block'; document.getElementById('galleryView').style.display='none'; };
 </script>
 </body>
