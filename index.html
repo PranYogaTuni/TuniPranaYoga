@@ -57,7 +57,7 @@
             background-repeat: no-repeat;
             background-position: center center; 
             display: flex;
-            align-items: flex-end; /* Align buttons to the bottom */
+            align-items: flex-end; 
             justify-content: center;
         }
 
@@ -69,7 +69,7 @@
             border-radius: 50px;
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            margin-bottom: 30px; /* Space from the bottom edge of the image */
+            margin-bottom: 40px; 
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
         
@@ -272,6 +272,46 @@
   const db = getFirestore(app);
   const courseList = ["Basic (L1)", "Advance (L2)", "Psychotherapy (L3)", "HamsaVedaYoga"];
 
+  // ==========================================
+  // EDITABLE DATA ZONE - ADD YOUR ITEMS HERE
+  // ==========================================
+
+  // 1. ADD PAST EVENTS HERE
+  const STATIC_PAST_EVENTS = [
+    { 
+      name: "Sri Rama Navami", 
+      description: "A wonderful session with over 1500 participants chanting the Rama Mantra together.",
+      photos: ["https://i.postimg.cc/0jGtPtCB/IMG-20260329-054539564-HDR.jpg", "https://i.postimg.cc/L8Qx9gzF/IMG-20260329-160642945-HDR.jpg", "https://i.postimg.cc/jSS8Y4Js/IMG-20260329-161125130-HDR.jpg", "https://i.postimg.cc/fRCQZ397/IMG-20260329-162337260-HDR.jpg"] 
+    }
+  ];
+
+  // 2. ADD UPCOMING EVENTS HERE
+  const STATIC_UPCOMING_EVENTS = [
+    { 
+      name: "Rama Chanting", 
+      place: "Annavaram Devsthanam", 
+      date: "April 31, 2026", 
+      time: "5:00 AM - 6:00 AM", 
+      description: "Chanting the Rama Mantra." 
+    }
+  ];
+
+  // 3. ADD UPCOMING CLASSES HERE
+  const STATIC_UPCOMING_CLASSES = [
+    {
+        name: "Psychic self defence", 
+        place: "Tuni Prana Yoga centre", 
+        date: "April 17, 2026", 
+        time: "8:00 AM - 3 PM", 
+        description: "Psychic self defence practice session"
+    },
+    
+  ];
+
+  // ==========================================
+  // END OF EDITABLE ZONE - CORE LOGIC BELOW
+  // ==========================================
+
   window.showCourseCount = async (courseName) => {
     try {
         const coll = collection(db, "students");
@@ -293,14 +333,6 @@
         alert("Could not fetch data. Please try again.");
     }
   };
-
-  const PAST_EVENTS = [{ 
-    name: "Sri Rama Navami", 
-    description: "A wonderful session with over 1500 participants chanting the Rama Mantra together.",
-    photos: ["https://i.postimg.cc/0jGtPtCB/IMG-20260329-054539564-HDR.jpg", "https://i.postimg.cc/L8Qx9gzF/IMG-20260329-160642945-HDR.jpg", "https://i.postimg.cc/jSS8Y4Js/IMG-20260329-161125130-HDR.jpg", "https://i.postimg.cc/fRCQZ397/IMG-20260329-162337260-HDR.jpg"] 
-  }];
-  const FUTURE_EVENTS = [];
-  const FUTURE_CLASSES = [{ name: "Psychic self defence", place: "Payakarao Peta Prana Yoga centre ", date: "April 19, 2026", time: "8:00 AM Onwards", description:"To protect ourselves from psychic attacks" }];
 
   window.updateCourseLogic = () => {
     const l1 = document.getElementById('cb-L1');
@@ -347,12 +379,12 @@
   });
 
   function renderCard(s) {
-      return `<div class="student-card"><span class="st-name">${s.name}</span><span class="st-meta">📞 ${s.phone}<br>🆔 ${s.aadhar || 'N/A'}<br>📍 ${s.venue || 'N/A'}</span><div class="btn-group-small"><button class="sm-btn btn-view" onclick="viewStudent('${s.id}')">View</button><button class="sm-btn btn-edit" onclick="editStudent('${s.id}')">Edit</button><button class="sm-btn btn-del" onclick="deleteStudent('${s.id}')">Del</button></div></div>`;
+      return `<div class="student-card"><span class="st-name">${s.name}</span><span class="st-meta">📞 ${s.phone}<br>📍 ${s.venue || 'N/A'}</span><div class="btn-group-small"><button class="sm-btn btn-view" onclick="viewStudent('${s.id}')">View</button><button class="sm-btn btn-edit" onclick="editStudent('${s.id}')">Edit</button><button class="sm-btn btn-del" onclick="deleteStudent('${s.id}')">Del</button></div></div>`;
   }
 
   window.viewStudent = (id) => {
     const s = window[`data_${id}`];
-    let cHtml = ""; courseList.forEach(c => { if(s.courses && s.courses[c]) cHtml += `<li>${c}: ${s.courses[c]}</li>`; });
+    let cHtml = ""; if(s.courses) Object.keys(s.courses).forEach(c => { cHtml += `<li>${c}: ${s.courses[c]}</li>`; });
     document.getElementById('modalBody').innerHTML = `<span class="close-btn" onclick="closeModal()">&times;</span><h3 style="margin-top:0">${s.name}</h3><p><strong>Phone:</strong> ${s.phone}<br><strong>Aadhar:</strong> ${s.aadhar || 'N/A'}<br><strong>Branch:</strong> ${s.venue || 'N/A'}<br><strong>Ref:</strong> ${s.refName || 'N/A'}</p><hr><strong>Courses Completed:</strong><ul>${cHtml || '<li>None</li>'}</ul>`;
     document.getElementById('studentModal').style.display = 'flex';
   };
@@ -374,8 +406,9 @@
   window.filterStudents = () => { const q = document.getElementById('searchInput').value.toLowerCase(); const res = document.getElementById('searchResults'); res.innerHTML = ''; if(!q) return; window.allStudents.filter(s => (s.name && s.name.toLowerCase().includes(q)) || (s.phone && s.phone.includes(q)) || (s.aadhar && s.aadhar.includes(q))).forEach(s => res.innerHTML += renderCard(s)); };
   window.closeModal = () => document.getElementById('studentModal').style.display = 'none';
 
+  // INITIALIZE STATIC DATA
   const pastGrid = document.getElementById('pastEventsGrid');
-  PAST_EVENTS.forEach(ev => {
+  STATIC_PAST_EVENTS.forEach(ev => {
       const d = document.createElement('div'); d.className = 'card past-card'; d.innerHTML = `<h3>${ev.name}</h3><p class="event-desc">${ev.description}</p><button class="main-btn" style="padding:8px; font-size:0.8rem">View Photos</button>`;
       d.onclick = () => {
           document.getElementById('eventListView').style.display='none'; document.getElementById('galleryView').style.display='block';
@@ -387,9 +420,19 @@
   });
 
   const upGrid = document.getElementById('upcomingGrid');
+  STATIC_UPCOMING_EVENTS.forEach(ev => {
+    const d = document.createElement('div'); d.className = 'card upcoming-card';
+    d.innerHTML = `<h3>${ev.name}</h3><p><strong>📍 ${ev.place}</strong></p><p>📅 ${ev.date} | 🕒 ${ev.time}</p><p class="event-desc">${ev.description}</p>`;
+    upGrid.appendChild(d);
+  });
+
   const upClassGrid = document.getElementById('upcomingClassesGrid');
-  if(FUTURE_CLASSES.length === 0) { upClassGrid.innerHTML = '<p>No classes scheduled.</p>'; } 
-  else { FUTURE_CLASSES.forEach(cls => { const d = document.createElement('div'); d.className = 'card class-card'; d.innerHTML = `<h3>${cls.name}</h3><p><strong>📍 ${cls.place}</strong></p><p>📅 ${cls.date} | 🕒 ${cls.time}</p><p class="event-desc">${cls.description}</p>`; upClassGrid.appendChild(d); }); }
+  STATIC_UPCOMING_CLASSES.forEach(cls => {
+      const d = document.createElement('div'); d.className = 'card class-card';
+      d.innerHTML = `<h3>${cls.name}</h3><p><strong>📍 ${cls.place}</strong></p><p>📅 ${cls.date} | 🕒 ${cls.time}</p><p class="event-desc">${cls.description}</p>`;
+      upClassGrid.appendChild(d);
+  });
+
   window.closeGallery = () => { document.getElementById('eventListView').style.display='block'; document.getElementById('galleryView').style.display='none'; };
 </script>
 </body>
